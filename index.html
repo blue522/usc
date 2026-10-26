@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>USC College Admissions Simulator: How Early Decision, Early Action &amp; the "Second Bite" in RD Change Your Odds</title>
-  <meta name="description" content="Interactive, single-file College Admissions Simulator calibrated to USC's 2026-2027 class (79,331 applicants, 10,006 admitted, 3,766 enrolled). Shows 1st-bite Early odds, 2nd-bite Regular Decision deferral odds, and the athlete/legacy hook tax." />
+  <title>How Early Decision &amp; Early Action Change Your Admissions Odds</title>
+  <meta name="description" content="Interactive College Admissions Simulator calibrated to USC's 2026-2027 class. Drag the handles to see how Binding Early Decision (ED), Early Action (EA), athlete/legacy hooks, and deferrals affect your real odds." />
   <style>
     /* ==========================================================================
        100% SELF-CONTAINED CSS (ZERO EXTERNAL DEPENDENCIES — READY TO EMAIL)
@@ -30,7 +30,6 @@
       --bdr: var(--border, #e2e8f0);
       --subtle-bg: color-mix(in srgb, var(--fg) 4%, var(--card-bg));
 
-      /* Brand & Semantic Accents */
       --usc-cardinal: #990000;
       --ed-red: #dc2626;
       --ed-red-soft: rgba(220, 38, 38, 0.12);
@@ -46,7 +45,7 @@
       background-color: var(--bg);
       color: var(--fg);
       min-height: 100vh;
-      padding: 20px 16px 48px;
+      padding: 18px 16px 40px;
       transition: background-color 0.2s ease, color 0.2s ease;
     }
 
@@ -70,11 +69,11 @@
     }
 
     .container {
-      max-width: 1280px;
+      max-width: 1240px;
       margin: 0 auto;
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 14px;
     }
 
     .card {
@@ -82,7 +81,7 @@
       color: var(--fg);
       border: 1px solid var(--bdr);
       border-radius: 16px;
-      padding: 20px;
+      padding: 18px 20px;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     }
 
@@ -90,54 +89,49 @@
       background-color: var(--subtle-bg);
       border: 1px solid var(--bdr);
       border-radius: 12px;
-      padding: 12px 14px;
+      padding: 14px 16px;
     }
 
     .muted { color: var(--muted); }
     .tabular { font-variant-numeric: tabular-nums; }
 
     h1 {
-      font-size: clamp(1.35rem, 2.5vw, 1.85rem);
+      font-size: clamp(1.3rem, 2.2vw, 1.75rem);
       font-weight: 800;
       letter-spacing: -0.02em;
       line-height: 1.2;
     }
     h2 {
-      font-size: 1.15rem;
+      font-size: 1.05rem;
       font-weight: 700;
       letter-spacing: -0.01em;
     }
     h3 {
-      font-size: 1rem;
+      font-size: 0.95rem;
       font-weight: 700;
     }
 
-    .grid-2 { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; }
     .grid-3 { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; }
     .grid-4 { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; }
-    .workspace-split { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; align-items: start; }
 
-    .grid-2 > *, .grid-3 > *, .grid-4 > *, .workspace-split > * {
+    .grid-3 > *, .grid-4 > * {
       min-width: 0;
       max-width: 100%;
     }
 
     @media (min-width: 640px) {
-      body { padding: 24px 24px 56px; }
-      .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      body { padding: 22px 24px 48px; }
       .grid-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
     @media (min-width: 1024px) {
       .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
       .grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-      .workspace-split { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); }
     }
 
     .flex-between { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px; }
     .flex-wrap-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
     .stack-sm { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
     .stack-md { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
-    .stack-lg { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
 
     .badge {
       display: inline-flex;
@@ -162,8 +156,8 @@
       align-items: center;
       justify-content: center;
       gap: 6px;
-      padding: 8px 14px;
-      border-radius: 10px;
+      padding: 6px 12px;
+      border-radius: 9px;
       font-size: 12px;
       font-weight: 700;
       border: 1px solid var(--bdr);
@@ -171,48 +165,41 @@
       color: var(--fg);
       cursor: pointer;
       transition: all 0.15s ease;
-      text-decoration: none;
     }
-    .btn:hover { opacity: 0.9; transform: translateY(-1px); }
-    .btn-primary {
-      background-color: var(--usc-cardinal);
-      color: #ffffff;
-      border-color: var(--usc-cardinal);
-    }
+    .btn:hover { opacity: 0.88; }
 
-    .seg-group {
+    /* Separate Quick Scenarios Bar */
+    .scenario-bar {
       display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      background: var(--card-bg);
-      padding: 4px;
-      border-radius: 10px;
-      border: 1px solid var(--bdr);
+      flex-direction: column;
+      gap: 10px;
     }
-    .seg-btn {
-      flex: 1 1 auto;
-      padding: 8px 12px;
-      border-radius: 7px;
-      font-size: 12px;
-      font-weight: 700;
-      border: none;
-      background: transparent;
-      color: var(--muted);
-      cursor: pointer;
-      transition: all 0.15s ease;
-      text-align: center;
+    @media (min-width: 900px) {
+      .scenario-bar {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
     }
-    .seg-btn:hover { color: var(--fg); }
-    .seg-btn.active {
-      background: var(--usc-cardinal);
-      color: #ffffff;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    .scenario-label-col {
+      flex-shrink: 0;
+      min-width: 210px;
     }
-
+    .scenario-btn-group {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 10px;
+      flex: 1;
+    }
+    @media (min-width: 640px) {
+      .scenario-btn-group {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
     .preset-btn {
       text-align: left;
-      padding: 12px 14px;
-      border-radius: 12px;
+      padding: 10px 13px;
+      border-radius: 10px;
       border: 1.5px solid var(--bdr);
       background-color: var(--subtle-bg);
       color: var(--fg);
@@ -220,16 +207,93 @@
       transition: all 0.15s ease;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
-      gap: 4px;
+      gap: 2px;
+      min-width: 0;
     }
     .preset-btn:hover { border-color: var(--muted); }
     .preset-btn.active {
       border: 2px solid var(--ed-red);
       background-color: var(--ed-red-soft);
-      box-shadow: 0 2px 8px rgba(220, 38, 38, 0.12);
+      box-shadow: 0 2px 8px rgba(220, 38, 38, 0.1);
     }
 
+    /* Interactive Dual-Handle Split Bar */
+    .dual-bar-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      user-select: none;
+    }
+    .dual-bar-track {
+      position: relative;
+      height: 36px;
+      width: 100%;
+      border-radius: 10px;
+      display: flex;
+      overflow: visible;
+      background-color: #2563eb;
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
+      touch-action: none;
+    }
+    .dual-seg {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 800;
+      color: #ffffff;
+      overflow: hidden;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+    .dual-seg-ed {
+      background-color: #dc2626;
+      border-top-left-radius: 10px;
+      border-bottom-left-radius: 10px;
+    }
+    .dual-seg-ea {
+      background-color: #d97706;
+    }
+    .dual-seg-rd {
+      background-color: #2563eb;
+      border-top-right-radius: 10px;
+      border-bottom-right-radius: 10px;
+    }
+    .dual-handle {
+      position: absolute;
+      top: -5px;
+      bottom: -5px;
+      width: 18px;
+      transform: translateX(-50%);
+      border-radius: 6px;
+      background-color: #ffffff;
+      border: 2px solid #0f172a;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+      cursor: ew-resize;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 20;
+      touch-action: none;
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+    }
+    .dual-handle::after {
+      content: "⋮";
+      color: #0f172a;
+      font-size: 13px;
+      font-weight: 900;
+      line-height: 1;
+    }
+    .dual-handle:hover,
+    .dual-handle:focus-visible,
+    .dual-handle.dragging {
+      transform: translateX(-50%) scale(1.1);
+      box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.25), 0 2px 8px rgba(0, 0, 0, 0.4);
+      outline: none;
+    }
+
+    /* Single Range Slider */
     input[type="range"].sim-slider {
       -webkit-appearance: none;
       appearance: none;
@@ -247,31 +311,150 @@
       width: 20px;
       height: 20px;
       border-radius: 50%;
-      background: var(--slider-color, #dc2626);
+      background: var(--slider-color, #059669);
       border: 2.5px solid #ffffff;
       box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
       cursor: pointer;
-      transition: transform 0.12s ease;
     }
-    input[type="range"].sim-slider::-webkit-slider-thumb:hover { transform: scale(1.15); }
     input[type="range"].sim-slider::-moz-range-thumb {
       width: 20px;
       height: 20px;
       border-radius: 50%;
-      background: var(--slider-color, #dc2626);
+      background: var(--slider-color, #059669);
       border: 2.5px solid #ffffff;
       box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
       cursor: pointer;
-      transition: transform 0.12s ease;
     }
 
+    /* 3-Choice Segmented Pill Selector */
+    .seg-group {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 4px;
+      background: var(--subtle-bg);
+      padding: 4px;
+      border-radius: 10px;
+      border: 1px solid var(--bdr);
+    }
+    .seg-btn {
+      padding: 7px 6px;
+      border-radius: 7px;
+      font-size: 12px;
+      font-weight: 700;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-align: center;
+    }
+    .seg-btn:hover { color: var(--fg); }
+    .seg-btn.active {
+      background: var(--card-bg);
+      color: var(--fg);
+      border: 1px solid var(--bdr);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+    }
+
+    /* Compact Yield Number Inputs */
+    .yield-mini-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+    .yield-mini-box {
+      background: var(--subtle-bg);
+      border: 1px solid var(--bdr);
+      border-radius: 10px;
+      padding: 8px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .yield-input-wrap {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+    }
+    .yield-input {
+      width: 100%;
+      background: var(--card-bg);
+      color: var(--fg);
+      border: 1px solid var(--bdr);
+      border-radius: 6px;
+      padding: 4px 6px;
+      font-size: 13px;
+      font-weight: 800;
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Compact 100-Block Seat Map */
+    .waffle-grid {
+      display: grid;
+      grid-template-columns: repeat(20, minmax(0, 1fr));
+      gap: 3px;
+      padding: 8px;
+      border-radius: 10px;
+      background-color: var(--subtle-bg);
+      border: 1px solid var(--bdr);
+    }
+    .waffle-cell {
+      aspect-ratio: 1 / 1;
+      border-radius: 2px;
+    }
+
+    /* Scoreboard Cards in Box 2 */
+    .shots-pair {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      padding: 10px 0 6px;
+    }
+    .shot-col {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+    .shot-col-divider {
+      border-left: 1px solid var(--bdr);
+      padding-left: 10px;
+    }
+    .shot-single {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      padding: 10px 0 6px;
+    }
+    .shot-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      color: var(--muted);
+    }
+    .hero-num {
+      font-size: clamp(1.55rem, 2.3vw, 2.05rem);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+    .shot-count {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--fg);
+      margin-top: 2px;
+    }
+
+    /* Tooltips */
     .tip-trigger {
       position: relative;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 18px;
-      height: 18px;
+      width: 17px;
+      height: 17px;
       border-radius: 50%;
       background-color: color-mix(in srgb, var(--fg) 12%, var(--card-bg));
       color: var(--fg);
@@ -286,15 +469,15 @@
       opacity: 0;
       position: absolute;
       bottom: calc(100% + 8px);
-      left: 50%;
-      transform: translateX(-50%) translateY(4px);
-      width: 260px;
-      padding: 10px 12px;
+      right: 0;
+      transform: translateY(4px);
+      width: 230px;
+      padding: 9px 11px;
       border-radius: 8px;
       background-color: #0f172a;
       color: #f8fafc;
       font-size: 12px;
-      line-height: 1.45;
+      line-height: 1.4;
       font-weight: 400;
       text-align: left;
       box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.35);
@@ -302,63 +485,14 @@
       transition: opacity 0.15s ease, transform 0.15s ease;
       z-index: 100;
     }
-    .tip-box::after {
-      content: "";
-      position: absolute;
-      top: 100%;
-      left: 50%;
-      transform: translateX(-50%);
-      border-width: 6px;
-      border-style: solid;
-      border-color: #0f172a transparent transparent transparent;
-    }
     .tip-trigger:hover .tip-box,
     .tip-trigger:focus .tip-box {
       visibility: visible;
       opacity: 1;
-      transform: translateX(-50%) translateY(0);
+      transform: translateY(0);
     }
 
-    .split-bar {
-      height: 14px;
-      width: 100%;
-      border-radius: 999px;
-      overflow: hidden;
-      display: flex;
-      background-color: color-mix(in srgb, var(--fg) 10%, var(--card-bg));
-      border: 1px solid var(--bdr);
-    }
-    .split-seg { height: 100%; transition: width 0.18s ease; }
-
-    .waffle-grid {
-      display: grid;
-      grid-template-columns: repeat(10, minmax(0, 1fr));
-      gap: 4px;
-      padding: 10px;
-      border-radius: 12px;
-      background-color: var(--subtle-bg);
-      border: 1px solid var(--bdr);
-    }
-    .waffle-cell {
-      aspect-ratio: 1 / 1;
-      border-radius: 3px;
-      transition: transform 0.12s ease;
-    }
-    .waffle-cell:hover { transform: scale(1.2); z-index: 5; }
-
-    .comp-track {
-      height: 14px;
-      width: 100%;
-      border-radius: 999px;
-      background-color: color-mix(in srgb, var(--fg) 10%, var(--card-bg));
-      overflow: hidden;
-      display: flex;
-    }
-    .comp-fill {
-      height: 100%;
-      transition: width 0.2s ease;
-    }
-
+    /* Table */
     .table-wrap {
       overflow-x: auto;
       border-radius: 12px;
@@ -369,9 +503,10 @@
       border-collapse: collapse;
       text-align: left;
       font-size: 13px;
+      color: var(--fg);
     }
     th, td {
-      padding: 11px 14px;
+      padding: 10px 13px;
       border-bottom: 1px solid var(--bdr);
     }
     th {
@@ -379,32 +514,21 @@
       font-size: 12px;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.04em;
+      letter-spacing: 0.03em;
       color: var(--muted);
     }
     .text-right { text-align: right; }
-    .strike { text-decoration: line-through; opacity: 0.65; }
     .hidden { display: none !important; }
 
-    .hero-num {
-      font-size: clamp(1.75rem, 3vw, 2.35rem);
-      font-weight: 800;
-      line-height: 1.1;
-      letter-spacing: -0.02em;
-    }
-
-    .step-circle {
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      background-color: var(--usc-cardinal);
-      color: #ffffff;
+    details summary {
+      cursor: pointer;
       font-size: 12px;
-      font-weight: 800;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
+      font-weight: 600;
+      color: var(--muted);
+      user-select: none;
+    }
+    details summary:hover {
+      color: var(--fg);
     }
   </style>
 </head>
@@ -412,16 +536,16 @@
   <main class="container">
 
     <!-- ======================================================================
-         1. HEADER + PUBLISHED USC 2026-2027 DATA + EMAIL DOWNLOAD BUTTON
+         HEADER (SINGLE PILL + SHORT ED IMPACT DESCRIPTION)
          ====================================================================== -->
-    <header class="card stack-md">
-      <div class="flex-between" style="flex-wrap: wrap; gap: 12px;">
+    <header class="card stack-sm">
+      <div class="flex-between" style="gap: 10px;">
         <div class="flex-wrap-row">
           <span class="badge" style="background: rgba(153,0,0,0.12); color: #b91c1c;">
-            <span>✌ USC 2026–2027 Calibrated Model</span>
+            <span>✌ USC 2026–2027 Baseline</span>
           </span>
           <span class="badge badge-neutral tabular">
-            Published 2026–27 Data: <strong>79,331 Applied</strong> • <strong>10,006 Admitted (12.61%)</strong> • <strong>3,766 Enrolled (37.64% Yield)</strong>
+            <strong>79,331 Applied</strong> • <strong>10,006 Admitted (12.61%)</strong> • <strong>3,766 Enrolled (37.64% Yield)</strong>
           </span>
         </div>
 
@@ -430,175 +554,228 @@
             <span>🌓 Theme</span>
           </button>
           <button type="button" class="btn" onclick="applyPreset('usc')">
-            <span>↺ Reset to Default</span>
+            <span>↺ Reset</span>
           </button>
         </div>
       </div>
 
-      <div class="stack-sm">
-        <h1>How Early Decision &amp; Early Action Change Your Admissions Odds</h1>
-        <p class="muted" style="font-size: 14px; max-width: 960px;">
-          In 2026–2027, USC received <strong>79,331 applications</strong>, admitted <strong>10,006 students (12.61%)</strong>, and enrolled <strong>3,766 freshmen (37.64% yield)</strong>. When you apply <strong>Early (ED or EA)</strong>, two big things happen: (1) in ED, athletes and legacies quietly take a big slice of the early seats, <em>and</em> (2) if you aren't accepted early, you usually aren't rejected—you get <strong>pushed ("deferred") into Regular Decision for a 2nd Bite at the Apple!</strong>
-        </p>
-      </div>
-
-      <!-- HOW TO USE THIS IN 30 SECONDS (3 SIMPLE STEPS) -->
-      <div class="grid-3">
-        <div class="subtle-box flex-wrap-row" style="align-items: flex-start; flex-wrap: nowrap; gap: 10px;">
-          <span class="step-circle">1</span>
-          <div style="font-size: 12px;">
-            <strong>Check Your "Two-Bite" Odds (Below)</strong>
-            <p class="muted" style="margin-top: 2px;">Pick whether you're a regular student or athlete/legacy, and click <strong>ED</strong>, <strong>EA</strong>, or <strong>RD</strong> to see your <strong>1st Shot (Early) + 2nd Shot (if Deferred to RD)</strong>.</p>
-          </div>
-        </div>
-        <div class="subtle-box flex-wrap-row" style="align-items: flex-start; flex-wrap: nowrap; gap: 10px;">
-          <span class="step-circle">2</span>
-          <div style="font-size: 12px;">
-            <strong>Click the 4 Quick Scenarios</strong>
-            <p class="muted" style="margin-top: 2px;">Compare <em>USC's 10,006-admit baseline</em> against adding <em>Binding Early Decision (25% or 45% of the class)</em> on the Scoreboard.</p>
-          </div>
-        </div>
-        <div class="subtle-box flex-wrap-row" style="align-items: flex-start; flex-wrap: nowrap; gap: 10px;">
-          <span class="step-circle">3</span>
-          <div style="font-size: 12px;">
-            <strong>Drag Sliders on the Left to Test "What If?"</strong>
-            <p class="muted" style="margin-top: 2px;">Test how many early applicants get deferred to RD, whether deferred kids get a boost in RD, and how athlete/legacy hooks change ED.</p>
-          </div>
-        </div>
-      </div>
+      <h1 style="margin-top: 2px;">How Early Decision &amp; Early Action Change Your Admissions Odds</h1>
+      <p class="muted" style="font-size: 14px; max-width: 900px;">
+        When a selective university adds <strong>Binding Early Decision (ED)</strong>, a large share of freshman spots gets locked up early by recruited athletes, legacies, and binding applicants—shrinking the seats left for everyone else.
+      </p>
     </header>
 
     <!-- ======================================================================
-         2. STEP 1: INTERACTIVE "WHAT ARE MY REAL ODDS?" (1ST BITE + 2ND BITE)
+         SEPARATE SCENARIO PRESETS BOX (CLEARLY DISTINCT FROM A / B / C CONTROLS)
          ====================================================================== -->
-    <section class="card stack-md" style="border-left: 5px solid var(--usc-cardinal);" aria-label="Personal Odds Calculator">
-      <div class="flex-between" style="flex-wrap: wrap;">
-        <div>
-          <span class="badge badge-red">Step 1 • Personal "Two-Bite" Odds Calculator</span>
-          <h2 style="margin-top: 4px;">What Are <em>Your</em> Real Odds? (1st Shot Early + 2nd Shot in RD)</h2>
-        </div>
-        <div class="muted" style="font-size: 12px;">
-          Click below to see both your initial early chance (<strong>X%</strong>) and your second-chance RD deferral boost (<strong>+Z%</strong>):
-        </div>
+    <section class="card scenario-bar" aria-label="Preset Scenarios">
+      <div class="scenario-label-col stack-sm" style="gap: 2px;">
+        <div style="font-size: 14px; font-weight: 800;">Quick Scenarios</div>
+        <div class="muted" style="font-size: 12px;">Click a preset to load settings:</div>
       </div>
 
-      <div class="grid-2" style="align-items: center;">
-        <!-- Left: 2 Simple Questions -->
-        <div class="stack-md">
-          <div class="stack-sm">
-            <label style="font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;" class="muted">
-              Question A: Who is applying?
-            </label>
-            <div class="seg-group" role="group" aria-label="Who is applying">
-              <button type="button" id="calc-type-unhooked" class="seg-btn active" onclick="setPersonalCalc('type', 'unhooked')">
-                🎒 Regular High School Student ("Unhooked")
-              </button>
-              <button type="button" id="calc-type-hooked" class="seg-btn" onclick="setPersonalCalc('type', 'hooked')">
-                🏆 Athlete / Legacy / VIP ("Hooked")
-              </button>
-            </div>
-          </div>
+      <div class="scenario-btn-group">
+        <button type="button" id="preset-old" class="preset-btn" onclick="applyPreset('old')">
+          <div style="font-size: 13px; font-weight: 700;">1. Before Early Rounds</div>
+          <div class="muted tabular" style="font-size: 12px;">0% ED • 0% EA • 100% RD seats</div>
+        </button>
 
-          <div class="stack-sm">
-            <label style="font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;" class="muted">
-              Question B: Which application round are you considering?
-            </label>
-            <div class="seg-group" role="group" aria-label="Which application round">
-              <button type="button" id="calc-round-ed" class="seg-btn active" onclick="setPersonalCalc('round', 'ed')">
-                🔒 Early Decision (ED - Binding)
-              </button>
-              <button type="button" id="calc-round-ea" class="seg-btn" onclick="setPersonalCalc('round', 'ea')">
-                ⚡ Early Action (EA - Non-Binding)
-              </button>
-              <button type="button" id="calc-round-rd" class="seg-btn" onclick="setPersonalCalc('round', 'rd')">
-                📅 Regular Decision (RD - 1 Shot Only)
-              </button>
-            </div>
+        <button type="button" id="preset-usc" class="preset-btn active" onclick="applyPreset('usc')">
+          <div class="flex-between">
+            <span style="font-size: 13px; font-weight: 700;">2. USC Mix (ED + EA + RD)</span>
+            <span class="badge badge-red" style="font-size: 11px; padding: 1px 7px;">Default</span>
           </div>
-        </div>
+          <div class="muted tabular" style="font-size: 12px;">25% ED • 35% EA • 40% RD seats</div>
+        </button>
 
-        <!-- Right: Live Plain-English Personal Answer Box -->
-        <div class="subtle-box stack-sm" style="padding: 16px 18px; border-width: 1.5px;">
-          <div class="flex-between" style="flex-wrap: wrap;">
-            <span id="personal-verdict-tag" class="badge badge-red">Regular Student • Binding Early Decision</span>
-            <span id="personal-verdict-odds-ratio" class="badge badge-neutral tabular">Roughly 1 in 6.1 total chance</span>
-          </div>
-
-          <div class="flex-wrap-row" style="align-items: baseline; gap: 16px; margin-top: 4px;">
-            <div>
-              <div class="muted" style="font-size: 12px; font-weight: 600;">Total Combined Chance (1st + 2nd Bite):</div>
-              <div id="personal-verdict-rate" class="hero-num tabular" style="color: var(--ed-red);">16.51%</div>
-            </div>
-            <div style="border-left: 1px solid var(--bdr); padding-left: 14px;" class="stack-sm">
-              <div style="font-size: 12px;">
-                1st Bite (Early Round): <strong id="personal-verdict-bite1" class="tabular">11.66%</strong>
-                <span id="personal-verdict-brochure-note" class="muted tabular" style="font-size: 12px;">(Brochure: 15.46%)</span>
-              </div>
-              <div style="font-size: 12px;">
-                2nd Bite (If Deferred to RD): <strong id="personal-verdict-bite2" class="tabular" style="color: var(--rd-blue);">+4.85%</strong>
-                <span id="personal-verdict-rd-rate-note" class="muted tabular" style="font-size: 12px;">(at 7.32% in RD)</span>
-              </div>
-            </div>
-          </div>
-
-          <p id="personal-verdict-text" style="font-size: 13px; line-height: 1.5; margin-top: 4px;">
-            <!-- Populated by JS -->
-          </p>
-        </div>
+        <button type="button" id="preset-heavy-ed" class="preset-btn" onclick="applyPreset('heavy_ed')">
+          <div style="font-size: 13px; font-weight: 700;">3. Heavy Early Decision</div>
+          <div class="muted tabular" style="font-size: 12px;">45% ED • 30% EA • 25% RD seats</div>
+        </button>
       </div>
     </section>
 
     <!-- ======================================================================
-         3. STEP 2: QUICK SCENARIO PRESETS + REAL-TIME SCOREBOARD (4 CARDS)
+         BOX 1: 3 INTERACTIVE CONTROL CARDS (A, B, C)
          ====================================================================== -->
-    <section class="card stack-md" aria-label="Quick Scenarios and Real-Time Scoreboard">
-      <div class="flex-between" style="flex-wrap: wrap;">
-        <div>
-          <span class="badge badge-blue">Step 2 • Compare Scenarios &amp; Scoreboard</span>
-          <h2 style="margin-top: 4px;">Click a Scenario to See How the Numbers Shift</h2>
-        </div>
-        <span class="muted" style="font-size: 12px;">All 4 scenarios keep USC's <strong>79,331 applicants</strong> and <strong>3,766 freshman spots</strong> constant.</span>
+    <section class="card stack-md" aria-label="Interactive Controls">
+      <div class="flex-between">
+        <h2>1. Adjust the Assumptions</h2>
+        <span class="muted" style="font-size: 12px;">
+          <strong>ED (Binding)</strong> = Must attend if accepted • <strong>EA (Non-Binding)</strong> = Early answer, decide by May 1 • <strong>RD</strong> = Regular winter deadline
+        </span>
       </div>
 
-      <!-- 4 Quick Preset Buttons -->
-      <div class="grid-4">
-        <button type="button" id="preset-old" class="preset-btn" onclick="applyPreset('old')">
-          <div>
-            <div style="font-size: 13px; font-weight: 700;">1. Old Way (100% Regular Decision)</div>
-            <div class="muted" style="font-size: 12px; margin-top: 2px;">All 79,331 apply in one pool; 10,006 admitted (12.61% rate, 37.64% yield)</div>
-          </div>
-          <div class="badge badge-neutral tabular" style="align-self: flex-start; margin-top: 4px;">10,006 Total Admits</div>
-        </button>
+      <!-- 3 Compact Control Cards Side-by-Side -->
+      <div class="grid-3" style="align-items: stretch;">
 
-        <button type="button" id="preset-ea-only" class="preset-btn" onclick="applyPreset('ea_only')">
-          <div>
-            <div style="font-size: 13px; font-weight: 700;">2. EA + Regular Only (No Binding ED)</div>
-            <div class="muted" style="font-size: 12px; margin-top: 2px;">40% of class filled in Non-Binding EA + 60% in Regular Decision</div>
-          </div>
-          <div class="badge badge-amber tabular" style="align-self: flex-start; margin-top: 4px;">No Binding Contract</div>
-        </button>
-
-        <button type="button" id="preset-usc" class="preset-btn active" onclick="applyPreset('usc')">
-          <div>
+        <!-- CONTROL CARD A: DRAGGABLE SPLIT BARS FOR SEATS & APPLICANTS -->
+        <div class="subtle-box stack-md" style="justify-content: space-between;">
+          <div class="stack-sm">
             <div class="flex-between">
-              <span style="font-size: 13px; font-weight: 700;">3. USC + Binding Early Decision</span>
-              <span class="badge badge-red">Default</span>
+              <h3>A. How Seats &amp; Applicants Split</h3>
+              <span class="badge badge-neutral" style="font-size: 11px;">Drag [⋮] handles</span>
             </div>
-            <div class="muted" style="font-size: 12px; margin-top: 2px;">25% ED + 35% EA + 40% RD seats, with 75% of early misses deferred to RD</div>
+            <p class="muted" style="font-size: 12px;">Drag the white handles on each bar to shift the split between <strong style="color: var(--ed-red);">ED</strong>, <strong style="color: var(--ea-amber);">EA</strong>, and <strong style="color: var(--rd-blue);">RD</strong>.</p>
           </div>
-          <div class="badge badge-red tabular" style="align-self: flex-start; margin-top: 4px;">Shows "2 Bites" + Hook Tax</div>
-        </button>
 
-        <button type="button" id="preset-heavy-ed" class="preset-btn" onclick="applyPreset('heavy_ed')">
-          <div>
-            <div style="font-size: 13px; font-weight: 700;">4. Heavy Early Decision (45% Locked in ED)</div>
-            <div class="muted" style="font-size: 12px; margin-top: 2px;">45% of freshman class filled in Binding ED + 30% EA, leaving 25% for RD</div>
+          <!-- Interactive Split Bar 1: Freshman Seats -->
+          <div class="dual-bar-wrap">
+            <div class="flex-between" style="font-size: 12px; font-weight: 700;">
+              <span>Freshman Seats (<span id="lbl-total-seats" class="tabular">3,766</span>)</span>
+              <span class="tip-trigger" tabindex="0">?
+                <span class="tip-box">How the university divides its freshman class across Binding ED, Non-Binding EA, and Regular Decision.</span>
+              </span>
+            </div>
+
+            <div id="track-spots" class="dual-bar-track" aria-label="Draggable split bar for freshman seats">
+              <div id="seg-spots-ed" class="dual-seg dual-seg-ed" style="width: 25%;">25%</div>
+              <div id="seg-spots-ea" class="dual-seg dual-seg-ea" style="width: 35%;">35%</div>
+              <div id="seg-spots-rd" class="dual-seg dual-seg-rd" style="width: 40%;">40%</div>
+              <div id="handle-spots-1" class="dual-handle" style="left: 25%;" tabindex="0" role="slider" aria-label="ED vs EA seats divider"></div>
+              <div id="handle-spots-2" class="dual-handle" style="left: 60%;" tabindex="0" role="slider" aria-label="EA vs RD seats divider"></div>
+            </div>
+
+            <div class="flex-between tabular" style="font-size: 12px;">
+              <span style="color: var(--ed-red);"><strong>ED:</strong> <span id="lbl-spots-ed">25% (942)</span></span>
+              <span style="color: var(--ea-amber);"><strong>EA:</strong> <span id="lbl-spots-ea">35% (1,318)</span></span>
+              <span style="color: var(--rd-blue);"><strong>RD:</strong> <span id="lbl-spots-rd">40% (1,506)</span></span>
+            </div>
           </div>
-          <div class="badge badge-purple tabular" style="align-self: flex-start; margin-top: 4px;">Severe RD Squeeze</div>
-        </button>
+
+          <!-- Interactive Split Bar 2: Applicants -->
+          <div class="dual-bar-wrap" style="border-top: 1px solid var(--bdr); padding-top: 10px;">
+            <div class="flex-between" style="font-size: 12px; font-weight: 700;">
+              <span>Applicants (<span id="lbl-total-apps" class="tabular">79,331</span>)</span>
+              <span class="tip-trigger" tabindex="0">?
+                <span class="tip-box">What % of students apply in Binding ED (~8%), Non-Binding EA (~32%), and Regular Decision (~60%).</span>
+              </span>
+            </div>
+
+            <div id="track-apps" class="dual-bar-track" aria-label="Draggable split bar for applicants">
+              <div id="seg-apps-ed" class="dual-seg dual-seg-ed" style="width: 8%;">8%</div>
+              <div id="seg-apps-ea" class="dual-seg dual-seg-ea" style="width: 32%;">32%</div>
+              <div id="seg-apps-rd" class="dual-seg dual-seg-rd" style="width: 60%;">60%</div>
+              <div id="handle-apps-1" class="dual-handle" style="left: 8%;" tabindex="0" role="slider" aria-label="ED vs EA applicants divider"></div>
+              <div id="handle-apps-2" class="dual-handle" style="left: 40%;" tabindex="0" role="slider" aria-label="EA vs RD applicants divider"></div>
+            </div>
+
+            <div class="flex-between tabular" style="font-size: 12px;">
+              <span style="color: var(--ed-red);"><strong>ED:</strong> <span id="lbl-apps-ed">8% (6,346)</span></span>
+              <span style="color: var(--ea-amber);"><strong>EA:</strong> <span id="lbl-apps-ea">32% (25,386)</span></span>
+              <span style="color: var(--rd-blue);"><strong>RD:</strong> <span id="lbl-apps-rd">60% (47,599)</span></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- CONTROL CARD B: ATHLETE & LEGACY "HOOKS" IN ED (WITH INTEGRATED SEAT MAP) -->
+        <div class="subtle-box stack-md" style="justify-content: space-between;">
+          <div class="stack-sm">
+            <div class="flex-between">
+              <h3>B. Athletes &amp; Legacies in ED</h3>
+              <span class="tip-trigger" tabindex="0">?
+                <span class="tip-box">Recruited athletes, legacies, and VIPs ("hooked" applicants) are told to apply in Early Decision, where ~95% are accepted—taking ED seats before regular students compete.</span>
+              </span>
+            </div>
+            <p class="muted" style="font-size: 12px;">Reserving ED seats for recruits and legacies leaves fewer open seats for regular ("unhooked") students.</p>
+          </div>
+
+          <div class="stack-sm">
+            <div class="flex-between" style="font-size: 12px;">
+              <label for="slider-hook-share" style="font-weight: 700;">% of ED Seats Taken by Hooks</label>
+              <span id="val-hook-share" class="badge badge-green tabular">28% (264 of 942 seats)</span>
+            </div>
+            <input id="slider-hook-share" type="range" min="0" max="50" step="1" value="28" style="--slider-color: #059669;" class="sim-slider" oninput="handleSliderChange('Hook_Share_ED', this.value)" />
+          </div>
+
+          <!-- Integrated Seat Map right inside Control Card B -->
+          <div class="stack-sm">
+            <div id="ed-waffle-grid" class="waffle-grid" aria-label="100-block grid of ED freshman seats"></div>
+            <div class="flex-between tabular" style="font-size: 12px; margin-top: 2px;">
+              <span style="color: var(--hook-green);">
+                <span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:#059669;margin-right:4px;"></span>
+                <strong>Hooks:</strong> <span id="waffle-legend-hook">264 seats</span>
+              </span>
+              <span style="color: var(--ed-red);">
+                <span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:#dc2626;margin-right:4px;"></span>
+                <strong>Open to Regular Kids:</strong> <span id="waffle-legend-open">678 seats</span>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- CONTROL CARD C: DEFERRALS TO RD & YIELD -->
+        <div class="subtle-box stack-md" style="justify-content: space-between;">
+          <div class="stack-sm">
+            <div class="flex-between">
+              <h3>C. Early Deferrals &amp; Yield</h3>
+              <span class="tip-trigger" tabindex="0">?
+                <span class="tip-box">Most students who aren't accepted in ED or EA aren't rejected—they get pushed ("deferred") into Regular Decision for a 2nd shot in March.</span>
+              </span>
+            </div>
+
+            <div class="stack-sm" style="margin-top: 4px;">
+              <div class="flex-between" style="font-size: 12px;">
+                <label for="slider-defer-rate" style="font-weight: 700;">% of Unaccepted Early Kids Deferred to RD</label>
+                <span id="val-defer-rate" class="badge badge-purple tabular">75% (+20,993)</span>
+              </div>
+              <input id="slider-defer-rate" type="range" min="0" max="100" step="5" value="75" style="--slider-color: #7c3aed;" class="sim-slider" oninput="handleSliderChange('Defer_rate', this.value)" />
+            </div>
+          </div>
+
+          <!-- 3-Option Pill Selector for Deferred Multiplier -->
+          <div class="stack-sm">
+            <div style="font-size: 12px; font-weight: 700;">How do deferred Early kids do in RD?</div>
+            <div class="seg-group" role="group" aria-label="How do deferred early kids do in RD">
+              <button type="button" id="boost-btn-08" class="seg-btn" onclick="setDeferBoost(0.8)">
+                Worse (0.8x)
+              </button>
+              <button type="button" id="boost-btn-10" class="seg-btn" onclick="setDeferBoost(1.0)">
+                Same (1.0x)
+              </button>
+              <button type="button" id="boost-btn-11" class="seg-btn active" onclick="setDeferBoost(1.1)">
+                Slight Edge (1.1x)
+              </button>
+            </div>
+          </div>
+
+          <!-- Compact 3-Box Yield Row -->
+          <div class="stack-sm" style="border-top: 1px solid var(--bdr); padding-top: 8px;">
+            <div class="flex-between" style="font-size: 12px;">
+              <span style="font-weight: 700;">% Who Enroll If Accepted (Yield)</span>
+              <span class="tip-trigger" tabindex="0">?
+                <span class="tip-box">Because 96% of binding ED admits enroll (vs. ~32% in RD), the college sends far fewer acceptance letters per seat in ED.</span>
+              </span>
+            </div>
+            <div class="yield-mini-grid">
+              <div class="yield-mini-box">
+                <label for="input-y-ed" style="font-size: 11px; font-weight: 700; color: var(--ed-red);">ED (Binding)</label>
+                <div class="yield-input-wrap">
+                  <input id="input-y-ed" type="number" min="80" max="100" step="1" value="96" class="yield-input" onchange="handleSliderChange('Y_ED', this.value)" />
+                  <span style="font-size: 12px; font-weight: 700;">%</span>
+                </div>
+              </div>
+              <div class="yield-mini-box">
+                <label for="input-y-ea" style="font-size: 11px; font-weight: 700; color: var(--ea-amber);">EA (Early)</label>
+                <div class="yield-input-wrap">
+                  <input id="input-y-ea" type="number" min="25" max="90" step="1" value="48" class="yield-input" onchange="handleSliderChange('Y_EA', this.value)" />
+                  <span style="font-size: 12px; font-weight: 700;">%</span>
+                </div>
+              </div>
+              <div class="yield-mini-box">
+                <label for="input-y-rd" style="font-size: 11px; font-weight: 700; color: var(--rd-blue);">RD (Regular)</label>
+                <div class="yield-input-wrap">
+                  <input id="input-y-rd" type="number" min="15" max="80" step="1" value="32" class="yield-input" onchange="handleSliderChange('Y_RD', this.value)" />
+                  <span style="font-size: 12px; font-weight: 700;">%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
 
-      <!-- DYNAMIC WARNING / ERROR BANNER -->
+      <!-- DYNAMIC MATH WARNING / ERROR ALERT BANNER -->
       <div id="warning-banner" class="hidden subtle-box" role="alert" aria-live="polite" style="border-width: 2px;">
         <div class="flex-wrap-row" style="align-items: flex-start; flex-wrap: nowrap; gap: 10px;">
           <span id="warning-icon" style="font-size: 18px;">⚠️</span>
@@ -608,618 +785,159 @@
           </div>
         </div>
       </div>
+    </section>
 
-      <!-- 4 BIG SCOREBOARD CARDS -->
+    <!-- ======================================================================
+         BOX 2: 4 UNIFORM ODDS CARDS + CLEAN BREAKDOWN TABLE
+         ====================================================================== -->
+    <section class="card stack-md" aria-label="Your Real Admissions Odds">
+      <div class="flex-between">
+        <h2>2. Your Real Admissions Odds</h2>
+        <span class="muted" style="font-size: 12px;">Early applicants get <strong>2 chances</strong>: 1st shot in Early + 2nd shot in March if deferred to RD.</span>
+      </div>
+
+      <!-- 4 UNIFORM SCOREBOARD CARDS (NO CONFUSING TOP-RIGHT PILLS, NO BROCHURE RATE) -->
       <div class="grid-4">
 
-        <!-- Card A: Early Decision (Binding) -->
-        <div class="subtle-box stack-md" style="padding: 16px; display: flex; flex-direction: column; justify-content: space-between;">
+        <!-- Subbox 1: Early Decision (Regular Unhooked Students) -->
+        <div class="subtle-box stack-md" style="display: flex; flex-direction: column; justify-content: space-between;">
           <div class="stack-sm">
-            <div class="flex-between">
+            <div>
               <span class="badge badge-red">Early Decision (ED)</span>
-              <span id="badge-ed-tax" class="badge badge-amber tabular">Hook Tax: -3.8%</span>
+              <div class="muted" style="font-size: 12px; margin-top: 4px;">Regular Student (Non-Recruit / Non-Legacy)</div>
             </div>
-            <div style="margin-top: 4px;">
-              <div class="muted" style="font-size: 12px; font-weight: 600;">1st Bite (Regular Student in ED):</div>
-              <div class="flex-wrap-row" style="align-items: baseline; gap: 10px; margin-top: 2px;">
-                <span id="score-ed-real" class="hero-num tabular" style="color: var(--ed-red);">11.66%</span>
-                <div>
-                  <span id="score-ed-brochure" class="strike tabular" style="font-size: 14px; font-weight: 700;">15.46%</span>
-                  <span class="muted" style="font-size: 12px; display: block;">Brochure Rate</span>
-                </div>
+
+            <!-- Side-by-side Large 1st Shot & Both Shots Totals -->
+            <div class="shots-pair tabular">
+              <div class="shot-col">
+                <span class="shot-label">1st Shot (ED)</span>
+                <span id="score-ed-shot1" class="hero-num" style="color: var(--ed-red);">11.66%</span>
+                <span id="score-ed-count1" class="shot-count">706 of 6,057</span>
+              </div>
+              <div class="shot-col shot-col-divider">
+                <span class="shot-label">Both Shots Total</span>
+                <span id="score-ed-both" class="hero-num" style="color: var(--ed-red);">16.51%</span>
+                <span id="score-ed-count-both" class="shot-count">1,000 of 6,057</span>
               </div>
             </div>
           </div>
 
           <div class="stack-sm tabular" style="font-size: 12px; border-top: 1px solid var(--bdr); padding-top: 10px;">
             <div class="flex-between">
-              <span class="muted">+ 2nd Bite (If Deferred):</span>
-              <strong id="score-ed-bite2" style="color: var(--rd-blue);">+4.85% (16.51% total)</strong>
+              <span class="muted">2nd Shot Admits in RD:</span>
+              <strong id="score-ed-rd-extra">+294 (+4.85%)</strong>
             </div>
             <div class="flex-between">
-              <span class="muted">Regular ED Admits (Pass 1):</span>
-              <strong id="score-ed-open-admits">706 of 6,057 apps</strong>
-            </div>
-            <div class="flex-between">
-              <span class="muted">Taken by Athletes/Legacies:</span>
-              <strong id="score-ed-hook-spots" style="color: var(--hook-green);">264 spots (275 admits)</strong>
+              <span class="muted">Open ED Seats:</span>
+              <strong id="score-ed-seats">678 seats (+264 hooked)</strong>
             </div>
           </div>
         </div>
 
-        <!-- Card B: Early Action (Non-Binding) -->
-        <div class="subtle-box stack-md" style="padding: 16px; display: flex; flex-direction: column; justify-content: space-between;">
+        <!-- Subbox 2: Early Action (EA) -->
+        <div class="subtle-box stack-md" style="display: flex; flex-direction: column; justify-content: space-between;">
           <div class="stack-sm">
-            <div class="flex-between">
+            <div>
               <span class="badge badge-amber">Early Action (EA)</span>
-              <span id="badge-ea-yield" class="badge badge-neutral tabular">48% Yield</span>
+              <div class="muted" style="font-size: 12px; margin-top: 4px;">All Early Action Applicants</div>
             </div>
-            <div style="margin-top: 4px;">
-              <div class="muted" style="font-size: 12px; font-weight: 600;">1st Bite (Admitted in January EA):</div>
-              <div class="flex-wrap-row" style="align-items: baseline; gap: 10px; margin-top: 2px;">
-                <span id="score-ea-rate" class="hero-num tabular" style="color: var(--ea-amber);">10.82%</span>
-                <span id="score-ea-vs-old" class="muted tabular" style="font-size: 12px; font-weight: 600;">+ 2nd Bite in RD!</span>
+
+            <!-- Side-by-side Large 1st Shot & Both Shots Totals -->
+            <div class="shots-pair tabular">
+              <div class="shot-col">
+                <span class="shot-label">1st Shot (EA)</span>
+                <span id="score-ea-shot1" class="hero-num" style="color: var(--ea-amber);">10.82%</span>
+                <span id="score-ea-count1" class="shot-count">2,746 of 25,386</span>
+              </div>
+              <div class="shot-col shot-col-divider">
+                <span class="shot-label">Both Shots Total</span>
+                <span id="score-ea-both" class="hero-num" style="color: var(--ea-amber);">15.71%</span>
+                <span id="score-ea-count-both" class="shot-count">3,989 of 25,386</span>
               </div>
             </div>
           </div>
 
           <div class="stack-sm tabular" style="font-size: 12px; border-top: 1px solid var(--bdr); padding-top: 10px;">
             <div class="flex-between">
-              <span class="muted">+ 2nd Bite (If Deferred):</span>
-              <strong id="score-ea-bite2" style="color: var(--rd-blue);">+4.90% (15.71% total)</strong>
+              <span class="muted">2nd Shot Admits in RD:</span>
+              <strong id="score-ea-rd-extra">+1,243 (+4.90%)</strong>
             </div>
             <div class="flex-between">
-              <span class="muted">January EA Admits (Pass 1):</span>
-              <strong id="score-ea-admits">2,746 of 25,386 apps</strong>
-            </div>
-            <div class="flex-between">
-              <span class="muted">Deferred EA Admits in March:</span>
-              <strong id="score-ea-deferred-admits">~1,243 more in RD</strong>
+              <span class="muted">EA Freshman Seats:</span>
+              <strong id="score-ea-seats">1,318 seats (35% of class)</strong>
             </div>
           </div>
         </div>
 
-        <!-- Card C: Regular Decision (The "RD Squeeze") -->
-        <div class="subtle-box stack-md" style="padding: 16px; display: flex; flex-direction: column; justify-content: space-between;">
+        <!-- Subbox 3: Regular Decision (RD) -->
+        <div class="subtle-box stack-md" style="display: flex; flex-direction: column; justify-content: space-between;">
           <div class="stack-sm">
-            <div class="flex-between">
+            <div>
               <span class="badge badge-blue">Regular Decision (RD)</span>
-              <span id="badge-rd-squeeze" class="badge badge-red tabular">-5.96% vs. Old</span>
+              <div class="muted" style="font-size: 12px; margin-top: 4px;">Applied Directly in RD (1 Shot Only)</div>
             </div>
-            <div style="margin-top: 4px;">
-              <div class="muted" style="font-size: 12px; font-weight: 600;">Direct RD Applicant Chance (1 Bite):</div>
-              <div class="flex-wrap-row" style="align-items: baseline; gap: 10px; margin-top: 2px;">
-                <span id="score-rd-real" class="hero-num tabular" style="color: var(--rd-blue);">6.65%</span>
-                <div>
-                  <span id="score-rd-old-ref" class="strike tabular" style="font-size: 14px; font-weight: 700;">12.61%</span>
-                  <span class="muted" style="font-size: 12px; display: block;">2026–27 Baseline</span>
-                </div>
-              </div>
+
+            <div class="shot-single tabular">
+              <span class="shot-label">Only Shot (March RD)</span>
+              <span id="score-rd-shot1" class="hero-num" style="color: var(--rd-blue);">6.65%</span>
+              <span id="score-rd-count1" class="shot-count">3,169 of 47,599 direct apps</span>
             </div>
           </div>
 
           <div class="stack-sm tabular" style="font-size: 12px; border-top: 1px solid var(--bdr); padding-top: 10px;">
-            <div class="flex-between">
-              <span class="muted">Deferred Early Kid Rate in RD:</span>
-              <strong id="score-rd-defer-rate-val" style="color: var(--rd-blue);">7.32% (1.1x boost)</strong>
-            </div>
             <div class="flex-between">
               <span class="muted">Total RD Pool (w/ Deferred):</span>
-              <strong id="score-rd-pool">68,599 students</strong>
+              <strong id="score-rd-pool">4,706 of 68,592 pool</strong>
             </div>
             <div class="flex-between">
-              <span class="muted">Remaining Spots Left:</span>
-              <strong id="score-rd-spots">1,506 of 3,766 (40%)</strong>
+              <span class="muted">RD Freshman Seats:</span>
+              <strong id="score-rd-seats">1,506 seats (40% of class)</strong>
             </div>
           </div>
         </div>
 
-        <!-- Card D: Overall College Selectivity -->
-        <div class="subtle-box stack-md" style="padding: 16px; display: flex; flex-direction: column; justify-content: space-between;">
+        <!-- Subbox 4: Overall Total (All Rounds) -->
+        <div class="subtle-box stack-md" style="display: flex; flex-direction: column; justify-content: space-between;">
           <div class="stack-sm">
-            <div class="flex-between">
-              <span class="badge badge-purple">Overall Selectivity</span>
-              <span id="badge-overall-drop" class="badge badge-purple tabular">1,573 Fewer Admits</span>
+            <div>
+              <span class="badge badge-neutral">Overall Total (All Rounds)</span>
+              <div class="muted" style="font-size: 12px; margin-top: 4px;">Combined Across ED, EA &amp; RD</div>
             </div>
-            <div style="margin-top: 4px;">
-              <div class="muted" style="font-size: 12px; font-weight: 600;">New Overall Acceptance Rate:</div>
-              <div class="flex-wrap-row" style="align-items: baseline; gap: 10px; margin-top: 2px;">
-                <span id="score-overall-new" class="hero-num tabular" style="color: var(--select-purple);">10.63%</span>
-                <div>
-                  <span id="score-overall-old" class="strike tabular" style="font-size: 14px; font-weight: 700;">12.61%</span>
-                  <span class="muted" style="font-size: 12px; display: block;">Published Rate</span>
-                </div>
-              </div>
+
+            <div class="shot-single tabular">
+              <span class="shot-label">Overall Acceptance Rate</span>
+              <span id="score-overall-rate" class="hero-num">10.63%</span>
+              <span id="score-overall-count" class="shot-count">8,433 of 79,331 applicants</span>
             </div>
           </div>
 
           <div class="stack-sm tabular" style="font-size: 12px; border-top: 1px solid var(--bdr); padding-top: 10px;">
             <div class="flex-between">
-              <span class="muted">New Total Admitted:</span>
-              <strong id="score-overall-admits-new">8,433 students</strong>
+              <span class="muted">2026–27 Baseline:</span>
+              <strong id="score-overall-baseline">10,006 of 79,331 (12.61%)</strong>
             </div>
             <div class="flex-between">
-              <span class="muted">2026–27 Published Admits:</span>
-              <strong id="score-overall-admits-old">10,006 students</strong>
-            </div>
-            <div class="flex-between">
-              <span class="muted">Effective Overall Yield:</span>
-              <strong id="score-overall-eff-yield">44.7% (was 37.64%)</strong>
+              <span class="muted">Total Freshman Class:</span>
+              <strong id="score-overall-seats">3,766 seats (100% of class)</strong>
             </div>
           </div>
         </div>
 
       </div>
-    </section>
 
-    <!-- ======================================================================
-         4. STEP 3: SIDE-BY-SIDE WORKSPACE (SLIDERS ON LEFT, CHARTS ON RIGHT)
-         ====================================================================== -->
-    <section class="workspace-split" aria-label="Interactive Sliders and Visual Charts">
-
-      <!-- LEFT COLUMN: 4 PLAIN-ENGLISH SLIDER CARDS -->
-      <div class="stack-lg">
-        <div class="flex-between">
-          <div>
-            <span class="badge badge-green">Step 3 • Adjust the Levers</span>
-            <h2 style="margin-top: 4px;">Interactive Sliders (Drag to Test "What If?")</h2>
-          </div>
-        </div>
-
-        <!-- CARD 1: THE BIG PICTURE (USC 2026-27 BASELINE) -->
-        <div class="card stack-md">
-          <div style="border-bottom: 1px solid var(--bdr); padding-bottom: 10px;">
-            <span class="badge badge-blue">Slider Card 1 • School Size &amp; 2026–27 Baseline</span>
-            <h3 style="margin-top: 4px;">The Big Picture (USC's 2026–2027 Numbers)</h3>
-            <p class="muted" style="font-size: 12px;">Defaulted to USC's published 2026–2027 class: 79,331 applicants, 3,766 freshmen, and 37.64% yield (10,006 admitted).</p>
-          </div>
-
-          <div class="stack-sm">
-            <div class="flex-between" style="font-size: 13px;">
-              <label for="slider-n-total" class="flex-wrap-row" style="font-weight: 600;">
-                <span>Total Applicants</span>
-                <span class="tip-trigger" tabindex="0">?
-                  <span class="tip-box">Total students applying across all rounds combined. USC received 79,331 applications for 2026–2027.</span>
-                </span>
-              </label>
-              <span id="val-n-total" class="badge badge-neutral tabular">79,331 students</span>
-            </div>
-            <input id="slider-n-total" type="range" min="20000" max="150000" step="100" value="79331" style="--slider-color: #2563eb;" class="sim-slider" oninput="handleSliderChange('N_total', this.value)" />
-            <div class="flex-between muted" style="font-size: 12px;">
-              <span>20,000</span>
-              <span>79,331 (USC 2026–27)</span>
-              <span>150,000</span>
-            </div>
-          </div>
-
-          <div class="stack-sm">
-            <div class="flex-between" style="font-size: 13px;">
-              <label for="slider-c-target" class="flex-wrap-row" style="font-weight: 600;">
-                <span>Freshman Class Spots (Matriculating)</span>
-                <span class="tip-trigger" tabindex="0">?
-                  <span class="tip-box">The number of admitted students who actually enroll and show up as freshmen in the fall (3,766 at USC in 2026–27).</span>
-                </span>
-              </label>
-              <span id="val-c-target" class="badge badge-neutral tabular">3,766 spots</span>
-            </div>
-            <input id="slider-c-target" type="range" min="1000" max="10000" step="10" value="3766" style="--slider-color: #2563eb;" class="sim-slider" oninput="handleSliderChange('C_target', this.value)" />
-            <div class="flex-between muted" style="font-size: 12px;">
-              <span>1,000</span>
-              <span>3,766 (USC 2026–27)</span>
-              <span>10,000</span>
-            </div>
-          </div>
-
-          <div class="stack-sm">
-            <div class="flex-between" style="font-size: 13px;">
-              <label for="slider-y-base" class="flex-wrap-row" style="font-weight: 600;">
-                <span>Baseline % Who Accept Offer (Yield)</span>
-                <span class="tip-trigger" tabindex="0">?
-                  <span class="tip-box">"Yield" is the % of admitted students who actually enroll. In 2026–27, 3,766 of USC's 10,006 admitted students enrolled (37.64% yield).</span>
-                </span>
-              </label>
-              <span id="val-y-base" class="badge badge-neutral tabular">37.64%</span>
-            </div>
-            <input id="slider-y-base" type="range" min="15" max="85" step="0.01" value="37.64" style="--slider-color: #2563eb;" class="sim-slider" oninput="handleSliderChange('Y_base', this.value)" />
-            <div class="flex-between muted" style="font-size: 12px;">
-              <span>15%</span>
-              <span>37.64% (3,766 / 10,006)</span>
-              <span>85%</span>
-            </div>
-          </div>
-
-          <div class="subtle-box flex-between" style="font-size: 12px; flex-wrap: wrap;">
-            <span>Published Baseline: <strong id="summary-old-admits" class="tabular">10,006</strong> admitted to fill <strong id="summary-old-spots" class="tabular">3,766</strong> spots</span>
-            <span class="badge badge-blue tabular">Baseline Rate: <span id="summary-old-rate">12.61%</span></span>
-          </div>
-        </div>
-
-        <!-- CARD 2: HOW MANY SPOTS & APPLICANTS GO EARLY? -->
-        <div class="card stack-md">
-          <div style="border-bottom: 1px solid var(--bdr); padding-bottom: 10px;">
-            <span class="badge badge-red">Slider Card 2 • Round Splits</span>
-            <h3 style="margin-top: 4px;">How Many Spots &amp; Applicants Go Early?</h3>
-            <p class="muted" style="font-size: 12px;">Whatever spots and applicants aren't assigned to ED or EA automatically go to Regular Decision.</p>
-          </div>
-
-          <!-- Part A: Class Spots Split -->
-          <div class="stack-sm">
-            <div class="muted" style="font-size: 12px; font-weight: 700; text-transform: uppercase;">A. Freshman Spots Assigned to Each Round</div>
-
-            <div class="flex-between" style="font-size: 13px;">
-              <label for="slider-s-ed" class="flex-wrap-row" style="font-weight: 600;">
-                <span>% of Freshman Class Filled in ED (Binding)</span>
-                <span class="tip-trigger" tabindex="0">?
-                  <span class="tip-box">Share of the 3,766 freshman seats locked in during Binding Early Decision.</span>
-                </span>
-              </label>
-              <span id="val-s-ed" class="badge badge-red tabular">25% (942 spots)</span>
-            </div>
-            <input id="slider-s-ed" type="range" min="0" max="80" step="1" value="25" style="--slider-color: #dc2626;" class="sim-slider" oninput="handleSliderChange('S_ED', this.value)" />
-
-            <div class="flex-between" style="font-size: 13px; margin-top: 4px;">
-              <label for="slider-s-ea" class="flex-wrap-row" style="font-weight: 600;">
-                <span>% of Freshman Class Filled in EA (Non-Binding)</span>
-                <span class="tip-trigger" tabindex="0">?
-                  <span class="tip-box">Share of the 3,766 freshman seats filled by students admitted in January Early Action.</span>
-                </span>
-              </label>
-              <span id="val-s-ea" class="badge badge-amber tabular">35% (1,318 spots)</span>
-            </div>
-            <input id="slider-s-ea" type="range" min="0" max="80" step="1" value="35" style="--slider-color: #d97706;" class="sim-slider" oninput="handleSliderChange('S_EA', this.value)" />
-
-            <div class="split-bar" style="margin-top: 4px;">
-              <div id="bar-spots-ed" class="split-seg" style="width: 25%; background: #dc2626;"></div>
-              <div id="bar-spots-ea" class="split-seg" style="width: 35%; background: #d97706;"></div>
-              <div id="bar-spots-rd" class="split-seg" style="width: 40%; background: #2563eb;"></div>
-            </div>
-            <div class="flex-between tabular" style="font-size: 12px;">
-              <span style="color: var(--ed-red);">ED: <strong id="lbl-spots-ed">25% (942)</strong></span>
-              <span style="color: var(--ea-amber);">EA: <strong id="lbl-spots-ea">35% (1,318)</strong></span>
-              <span style="color: var(--rd-blue);">RD Left: <strong id="lbl-spots-rd">40% (1,506)</strong></span>
-            </div>
-          </div>
-
-          <!-- Part B: Applicant Split -->
-          <div class="stack-sm" style="border-top: 1px solid var(--bdr); padding-top: 10px;">
-            <div class="muted" style="font-size: 12px; font-weight: 700; text-transform: uppercase;">B. How the 79,331 Applicants Split Across Rounds</div>
-
-            <div class="flex-between" style="font-size: 13px;">
-              <label for="slider-app-ed" class="flex-wrap-row" style="font-weight: 600;">
-                <span>% Applying in Early Decision (ED)</span>
-                <span class="tip-trigger" tabindex="0">?
-                  <span class="tip-box">Only a small % of students apply ED because it is a binding promise to attend if accepted.</span>
-                </span>
-              </label>
-              <span id="val-app-ed" class="badge badge-red tabular">8% (6,346 apps)</span>
-            </div>
-            <input id="slider-app-ed" type="range" min="0" max="60" step="1" value="8" style="--slider-color: #dc2626;" class="sim-slider" oninput="handleSliderChange('AppShare_ED', this.value)" />
-
-            <div class="flex-between" style="font-size: 13px; margin-top: 4px;">
-              <label for="slider-app-ea" class="flex-wrap-row" style="font-weight: 600;">
-                <span>% Applying in Early Action (EA)</span>
-                <span class="tip-trigger" tabindex="0">?
-                  <span class="tip-box">Many students apply EA because USC requires applying by the EA deadline for merit scholarships and it's non-binding.</span>
-                </span>
-              </label>
-              <span id="val-app-ea" class="badge badge-amber tabular">32% (25,386 apps)</span>
-            </div>
-            <input id="slider-app-ea" type="range" min="0" max="80" step="1" value="32" style="--slider-color: #d97706;" class="sim-slider" oninput="handleSliderChange('AppShare_EA', this.value)" />
-
-            <div class="split-bar" style="margin-top: 4px;">
-              <div id="bar-apps-ed" class="split-seg" style="width: 8%; background: #dc2626;"></div>
-              <div id="bar-apps-ea" class="split-seg" style="width: 32%; background: #d97706;"></div>
-              <div id="bar-apps-rd" class="split-seg" style="width: 60%; background: #2563eb;"></div>
-            </div>
-            <div class="flex-between tabular" style="font-size: 12px;">
-              <span style="color: var(--ed-red);">ED: <strong id="lbl-apps-ed">8% (6,346)</strong></span>
-              <span style="color: var(--ea-amber);">EA: <strong id="lbl-apps-ea">32% (25,386)</strong></span>
-              <span style="color: var(--rd-blue);">RD Direct: <strong id="lbl-apps-rd">60% (47,599)</strong></span>
-            </div>
-          </div>
-        </div>
-
-        <!-- CARD 3: THE "HOOK" FACTOR (ATHLETES & LEGACIES IN ED) -->
-        <div class="card stack-md" style="border: 1.5px solid var(--hook-green);">
-          <div style="border-bottom: 1px solid var(--bdr); padding-bottom: 10px;">
-            <span class="badge badge-green">Slider Card 3 • The "ED Illusion" (Athletes &amp; Legacies)</span>
-            <h3 style="margin-top: 4px;">The "Hook" Factor in Early Decision</h3>
-            <p class="muted" style="font-size: 12px;">Recruited athletes, legacies, and VIPs are told to apply in Early Decision—taking a large chunk of ED seats before regular students compete.</p>
-          </div>
-
-          <div class="stack-sm">
-            <div class="flex-between" style="font-size: 13px;">
-              <label for="slider-hook-share" class="flex-wrap-row" style="font-weight: 600;">
-                <span>% of ED Spots Taken by Athletes &amp; Legacies</span>
-                <span class="tip-trigger" tabindex="0">?
-                  <span class="tip-box">Share of Early Decision seats filled by recruited NCAA athletes, legacy families, and VIPs instead of regular high school students.</span>
-                </span>
-              </label>
-              <span id="val-hook-share" class="badge badge-green tabular">28% (264 spots)</span>
-            </div>
-            <input id="slider-hook-share" type="range" min="0" max="50" step="1" value="28" style="--slider-color: #059669;" class="sim-slider" oninput="handleSliderChange('Hook_Share_ED', this.value)" />
-            <div class="flex-between muted" style="font-size: 12px;">
-              <span>0% (No Hooks)</span>
-              <span>28% (~264 of 942 ED spots)</span>
-              <span>50% (Half of ED Locked)</span>
-            </div>
-          </div>
-
-          <div class="stack-sm">
-            <div class="flex-between" style="font-size: 13px;">
-              <label for="slider-hook-accept" class="flex-wrap-row" style="font-weight: 600;">
-                <span>Hooked Applicant ED Acceptance Rate</span>
-                <span class="tip-trigger" tabindex="0">?
-                  <span class="tip-box">Recruited athletes and pre-screened VIPs are vetted before applying, so ~95% are admitted.</span>
-                </span>
-              </label>
-              <span id="val-hook-accept" class="badge badge-neutral tabular">95%</span>
-            </div>
-            <input id="slider-hook-accept" type="range" min="50" max="100" step="1" value="95" style="--slider-color: #059669;" class="sim-slider" oninput="handleSliderChange('Hook_AcceptRate', this.value)" />
-          </div>
-
-          <div class="grid-2" style="gap: 10px;">
-            <div class="subtle-box" style="border-left: 3px solid var(--hook-green);">
-              <div style="font-size: 12px; font-weight: 700; color: var(--hook-green);">Athletes &amp; Legacies ("Hooked")</div>
-              <div id="hook-box-summary" class="tabular" style="font-size: 13px; font-weight: 700; margin-top: 2px;">289 apply → 275 accepted (95%)</div>
-              <div class="muted tabular" style="font-size: 12px;">Fills <strong id="hook-box-spots">264</strong> of <span id="hook-box-total-spots">942</span> ED spots</div>
-            </div>
-            <div class="subtle-box" style="border-left: 3px solid var(--ed-red);">
-              <div style="font-size: 12px; font-weight: 700; color: var(--ed-red);">Regular Students ("Unhooked")</div>
-              <div id="unhook-box-summary" class="tabular" style="font-size: 13px; font-weight: 700; margin-top: 2px;">6,057 apply → 706 accepted (11.66%)</div>
-              <div class="muted tabular" style="font-size: 12px;">Competes for <strong id="unhook-box-spots">678</strong> open ED spots</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- CARD 4: THE "2ND BITE" IN RD (DEFERRALS & YIELD) -->
-        <div class="card stack-md">
-          <div style="border-bottom: 1px solid var(--bdr); padding-bottom: 10px;">
-            <span class="badge badge-amber">Slider Card 4 • The "2nd Bite" in RD &amp; Yield</span>
-            <h3 style="margin-top: 4px;">What Happens When Early Kids Get Deferred to RD?</h3>
-            <p class="muted" style="font-size: 12px;">At USC, most students who aren't admitted in ED/EA aren't rejected—they are pushed ("deferred") into Regular Decision for a 2nd Bite at the Apple.</p>
-          </div>
-
-          <div class="stack-sm">
-            <div class="flex-between" style="font-size: 13px;">
-              <label for="slider-defer-rate" class="flex-wrap-row" style="font-weight: 600;">
-                <span>% of Unaccepted Early Kids Deferred to RD</span>
-                <span class="tip-trigger" tabindex="0">?
-                  <span class="tip-box">At USC, ~85–90% of non-admitted EA applicants (and ~40–50% of ED applicants) are deferred into Regular Decision rather than rejected early.</span>
-                </span>
-              </label>
-              <span id="val-defer-rate" class="badge badge-purple tabular">75% (+21,004 apps)</span>
-            </div>
-            <input id="slider-defer-rate" type="range" min="0" max="100" step="1" value="75" style="--slider-color: #7c3aed;" class="sim-slider" oninput="handleSliderChange('Defer_rate', this.value)" />
-            <div class="flex-between muted" style="font-size: 12px;">
-              <span>0% (All rejected early)</span>
-              <span>75% (Typical USC Deferral)</span>
-              <span>100% (Everyone deferred)</span>
-            </div>
-          </div>
-
-          <div class="stack-sm">
-            <div class="flex-between" style="font-size: 13px;">
-              <label for="slider-defer-boost" class="flex-wrap-row" style="font-weight: 600;">
-                <span>Do Deferred Early Kids Do Better in RD? (RD Multiplier)</span>
-                <span class="tip-trigger" tabindex="0">?
-                  <span class="tip-box">1.0x = Deferred ED/EA kids have the exact same chance in RD as fresh RD applicants. >1.0x = Deferred kids do slightly better because they showed early interest / met scholarship deadlines. <1.0x = Deferred kids do worse because admissions already passed on them once.</span>
-                </span>
-              </label>
-              <span id="val-defer-boost" class="badge badge-blue tabular">1.10x (Slight Boost)</span>
-            </div>
-            <input id="slider-defer-boost" type="range" min="0.5" max="1.5" step="0.05" value="1.10" style="--slider-color: #2563eb;" class="sim-slider" oninput="handleSliderChange('Defer_boost', this.value)" />
-            <div class="flex-between muted" style="font-size: 12px;">
-              <span>0.5x (Penalty in RD)</span>
-              <span>1.0x (Same as Direct RD)</span>
-              <span>1.5x (Strong Early Interest Boost)</span>
-            </div>
-          </div>
-
-          <div class="stack-sm" style="border-top: 1px solid var(--bdr); padding-top: 10px;">
-            <div class="muted" style="font-size: 12px; font-weight: 700; text-transform: uppercase;">% Who Enroll If Accepted (Yield by Round)</div>
-
-            <div class="flex-between" style="font-size: 13px;">
-              <label for="slider-y-ed" class="flex-wrap-row" style="font-weight: 600;">
-                <span>ED % Who Enroll — Yield (Binding)</span>
-              </label>
-              <span id="val-y-ed" class="badge badge-neutral tabular">96% (Binding)</span>
-            </div>
-            <input id="slider-y-ed" type="range" min="80" max="100" step="1" value="96" style="--slider-color: #dc2626;" class="sim-slider" oninput="handleSliderChange('Y_ED', this.value)" />
-
-            <div class="flex-between" style="font-size: 13px; margin-top: 4px;">
-              <label for="slider-y-ea" class="flex-wrap-row" style="font-weight: 600;">
-                <span>EA % Who Enroll — Yield (Non-Binding)</span>
-              </label>
-              <span id="val-y-ea" class="badge badge-neutral tabular">48% (Non-Binding)</span>
-            </div>
-            <input id="slider-y-ea" type="range" min="25" max="90" step="1" value="48" style="--slider-color: #d97706;" class="sim-slider" oninput="handleSliderChange('Y_EA', this.value)" />
-
-            <div class="flex-between" style="font-size: 13px; margin-top: 4px;">
-              <label for="slider-y-rd" class="flex-wrap-row" style="font-weight: 600;">
-                <span>RD % Who Enroll — Yield (Regular)</span>
-              </label>
-              <span id="val-y-rd" class="badge badge-neutral tabular">32% (Regular)</span>
-            </div>
-            <input id="slider-y-rd" type="range" min="15" max="80" step="0.1" value="32" style="--slider-color: #2563eb;" class="sim-slider" oninput="handleSliderChange('Y_RD', this.value)" />
-          </div>
-        </div>
-
-      </div>
-
-      <!-- RIGHT COLUMN: LIVE VISUALIZATIONS + 3 DYNAMIC TAKEAWAYS -->
-      <div class="stack-lg">
-
-        <!-- VISUAL 1: "THE EARLY DECISION ILLUSION" + TWO-BITE COMPARISON -->
-        <div class="card stack-md">
-          <div class="flex-between">
-            <span class="badge badge-red">Visual 1 • The ED Illusion &amp; "Two-Bite" Comparison</span>
-            <span class="muted" style="font-size: 12px;">1 block = 1% of ED seats</span>
-          </div>
-          <div>
-            <h2>Where the <span id="waffle-total-spots" class="tabular">942</span> ED Spots Go — And How "1st Bite + 2nd Bite" Compare</h2>
-            <p class="muted" style="font-size: 13px; margin-top: 2px;">
-              Notice two things: (1) Athletes and legacies take a big slice of ED seats, reducing your 1st Bite in ED, and (2) Early applicants who get deferred into RD get a <strong>2nd Bite</strong> in March (the blue tip on the bars)!
-            </p>
-          </div>
-
-          <div class="grid-2" style="align-items: center;">
-            <!-- Left: 100-Block Seat Waffle Grid -->
-            <div class="stack-sm">
-              <div id="ed-waffle-grid" class="waffle-grid" aria-label="100-block grid of ED freshman spots"></div>
-              <div class="stack-sm" style="font-size: 12px; margin-top: 4px;">
-                <div class="flex-between">
-                  <span class="flex-wrap-row">
-                    <span style="width: 12px; height: 12px; border-radius: 3px; background: #059669; display: inline-block;"></span>
-                    <span>Taken by Athletes/Legacies:</span>
-                  </span>
-                  <strong id="waffle-legend-hook" class="tabular">28% (264 spots)</strong>
-                </div>
-                <div class="flex-between">
-                  <span class="flex-wrap-row">
-                    <span style="width: 12px; height: 12px; border-radius: 3px; background: #dc2626; display: inline-block;"></span>
-                    <span>Open to Regular Students:</span>
-                  </span>
-                  <strong id="waffle-legend-open" class="tabular">72% (678 spots)</strong>
-                </div>
-              </div>
-            </div>
-
-            <!-- Right: Side-by-Side Comparison Bars (Showing Bite 1 + Bite 2 Stacked!) -->
-            <div class="stack-md">
-              <div style="font-size: 12px; font-weight: 700;">1st Bite (Early) + 2nd Bite (RD Deferral) Comparison:</div>
-
-              <div class="stack-sm">
-                <div class="flex-between" style="font-size: 12px;">
-                  <span>1. Hooked ED Rate (Athletes/Legacies)</span>
-                  <strong id="bar-lbl-hook-rate" class="tabular" style="color: var(--hook-green);">95.0%</strong>
-                </div>
-                <div class="comp-track">
-                  <div id="bar-vis-hook-rate" class="comp-fill" style="width: 95%; background: #059669;"></div>
-                </div>
-              </div>
-
-              <div class="stack-sm">
-                <div class="flex-between" style="font-size: 12px;">
-                  <span>2. Brochure ED Claim (1st Pass Only)</span>
-                  <strong id="bar-lbl-brochure-rate" class="muted tabular">15.46%</strong>
-                </div>
-                <div class="comp-track">
-                  <div id="bar-vis-brochure-rate" class="comp-fill" style="width: 15.46%; background: #64748b;"></div>
-                </div>
-              </div>
-
-              <div class="stack-sm">
-                <div class="flex-between" style="font-size: 12px;">
-                  <strong style="color: var(--ed-red);">3. Regular Student ED (1st Bite + 2nd Bite)</strong>
-                  <strong id="bar-lbl-real-ed-rate" class="tabular" style="color: var(--ed-red);">11.66% + 4.85% = 16.51%</strong>
-                </div>
-                <div class="comp-track">
-                  <div id="bar-vis-real-ed-rate" class="comp-fill" style="width: 11.66%; background: #dc2626;" title="1st Bite in ED"></div>
-                  <div id="bar-vis-ed-bite2" class="comp-fill" style="width: 4.85%; background: #3b82f6;" title="2nd Bite in RD after Deferral"></div>
-                </div>
-              </div>
-
-              <div class="stack-sm">
-                <div class="flex-between" style="font-size: 12px;">
-                  <strong style="color: var(--ea-amber);">4. Early Action — EA (1st Bite + 2nd Bite)</strong>
-                  <strong id="bar-lbl-real-ea-rate" class="tabular" style="color: var(--ea-amber);">10.82% + 4.90% = 15.71%</strong>
-                </div>
-                <div class="comp-track">
-                  <div id="bar-vis-real-ea-rate" class="comp-fill" style="width: 10.82%; background: #d97706;" title="1st Bite in EA"></div>
-                  <div id="bar-vis-ea-bite2" class="comp-fill" style="width: 4.90%; background: #3b82f6;" title="2nd Bite in RD after Deferral"></div>
-                </div>
-              </div>
-
-              <div class="stack-sm">
-                <div class="flex-between" style="font-size: 12px;">
-                  <span style="color: var(--rd-blue);">5. Regular Decision Only (1 Shot Only)</span>
-                  <strong id="bar-lbl-real-rd-rate" class="tabular" style="color: var(--rd-blue);">6.65% (No 2nd Bite)</strong>
-                </div>
-                <div class="comp-track">
-                  <div id="bar-vis-real-rd-rate" class="comp-fill" style="width: 6.65%; background: #2563eb;"></div>
-                </div>
-              </div>
-
-              <div id="ed-illusion-callout" class="subtle-box" style="font-size: 12px; line-height: 1.45;">
-                <!-- Populated by JS -->
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- VISUAL 2: "THE REGULAR DECISION SQUEEZE" CURVE -->
-        <div class="card stack-md">
-          <div class="flex-between">
-            <span class="badge badge-blue">Visual 2 • The Regular Decision Squeeze Curve</span>
-            <span class="muted" style="font-size: 12px;">0% to 80% of Class Filled Early</span>
-          </div>
-          <div>
-            <h2>How Regular Decision Gets Squeezed as Early Rounds Grow</h2>
-            <p class="muted" style="font-size: 13px; margin-top: 2px;">
-              Watch what happens to a student who waits for Regular Decision as USC locks up more of its 3,766 seats in ED and EA—and dumps thousands of deferred early applicants into the RD pool.
-            </p>
-          </div>
-
-          <div class="subtle-box stack-sm">
-            <svg id="squeeze-chart-svg" viewBox="0 0 600 255" style="width: 100%; height: auto; overflow: visible;" role="img" aria-label="Line chart of Regular Decision acceptance rate as Early share increases from 0% to 80%"></svg>
-
-            <div class="flex-wrap-row" style="justify-content: center; gap: 16px; font-size: 12px; padding-top: 4px;">
-              <span class="flex-wrap-row">
-                <span style="width: 16px; height: 2px; background: #94a3b8; display: inline-block;"></span>
-                <span class="muted">2026–27 Baseline (<strong id="curve-leg-old">12.61%</strong>)</span>
-              </span>
-              <span class="flex-wrap-row">
-                <span style="width: 10px; height: 10px; border-radius: 50%; background: #0ea5e9; display: inline-block;"></span>
-                <span>RD Rate (If 0% Deferred)</span>
-              </span>
-              <span class="flex-wrap-row">
-                <span style="width: 10px; height: 10px; border-radius: 50%; background: #2563eb; display: inline-block;"></span>
-                <strong>Real RD Rate (Incl. Deferred Early Kids)</strong>
-              </span>
-            </div>
-          </div>
-
-          <div id="rd-squeeze-callout" class="subtle-box" style="font-size: 12px; line-height: 1.45;">
-            <!-- Populated by JS -->
-          </div>
-        </div>
-
-        <!-- "WHAT THIS MEANS FOR YOU" DYNAMIC TAKEAWAY BOX -->
-        <div class="card stack-md" style="border-left: 5px solid var(--ed-red);">
-          <div>
-            <span class="badge badge-red">What This Means For You • Live Summary</span>
-            <h2 style="margin-top: 4px;">3 Plain-English Takeaways From Your Current Settings</h2>
-          </div>
-          <ol id="takeaways-list" class="stack-md" style="list-style: none;">
-            <!-- Populated by JS -->
-          </ol>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- ======================================================================
-         5. BOTTOM SECTION: PLAIN-ENGLISH SUMMARY TABLE
-         ====================================================================== -->
-    <section class="card stack-md" aria-label="Plain-English Breakdown Table">
-      <div>
-        <h2>Complete Side-by-Side Admissions Breakdown Table (With 1st &amp; 2nd Bite Odds)</h2>
-        <p class="muted" style="font-size: 13px;">Compare every round's 1st-Pass Rate, 2nd-Bite RD Deferral Boost, and Total 2-Round Combined Chance against USC's 2026–2027 baseline.</p>
-      </div>
-
-      <div class="table-wrap">
+      <!-- SIDE-BY-SIDE BREAKDOWN TABLE (CLEAN NEUTRAL TEXT COLORS) -->
+      <div class="table-wrap" style="margin-top: 4px;">
         <table>
           <thead>
             <tr>
               <th>Application Round</th>
-              <th class="text-right">Who Applies</th>
-              <th class="text-right">Students Accepted</th>
-              <th class="text-right">1st Bite Rate (Early Pass)</th>
-              <th class="text-right">2nd Bite (If Deferred to RD)</th>
-              <th class="text-right">Total Combined Chance</th>
+              <th class="text-right">Applicants</th>
+              <th class="text-right">Admitted (1st Shot)</th>
+              <th class="text-right">1st Shot Rate</th>
+              <th class="text-right">Admitted in RD (2nd Shot)</th>
+              <th class="text-right">Both Shots Total</th>
               <th class="text-right">% Who Enroll (Yield)</th>
-              <th class="text-right">Freshman Spots Filled</th>
+              <th class="text-right">Freshman Seats Filled</th>
             </tr>
           </thead>
           <tbody id="breakdown-table-body" class="tabular">
@@ -1227,6 +945,35 @@
           </tbody>
         </table>
       </div>
+
+      <!-- OPTIONAL COLLAPSED BASELINE TUNER (HIDDEN BY DEFAULT FOR CURIOSITY ONLY) -->
+      <details style="padding-top: 4px;">
+        <summary>⚙ Optional: Change baseline university size (Default: USC 2026–27 — 79,331 applicants, 3,766 seats, 37.64% yield)</summary>
+        <div class="grid-3 subtle-box" style="margin-top: 10px;">
+          <div class="stack-sm">
+            <div class="flex-between" style="font-size: 12px;">
+              <label for="slider-n-total" style="font-weight: 700;">Total Applicants</label>
+              <strong id="val-n-total" class="tabular">79,331</strong>
+            </div>
+            <input id="slider-n-total" type="range" min="20000" max="150000" step="100" value="79331" style="--slider-color: #2563eb;" class="sim-slider" oninput="handleSliderChange('N_total', this.value)" />
+          </div>
+          <div class="stack-sm">
+            <div class="flex-between" style="font-size: 12px;">
+              <label for="slider-c-target" style="font-weight: 700;">Freshman Class Seats</label>
+              <strong id="val-c-target" class="tabular">3,766</strong>
+            </div>
+            <input id="slider-c-target" type="range" min="1000" max="10000" step="10" value="3766" style="--slider-color: #2563eb;" class="sim-slider" oninput="handleSliderChange('C_target', this.value)" />
+          </div>
+          <div class="stack-sm">
+            <div class="flex-between" style="font-size: 12px;">
+              <label for="slider-y-base" style="font-weight: 700;">Baseline Yield (%)</label>
+              <strong id="val-y-base" class="tabular">37.64%</strong>
+            </div>
+            <input id="slider-y-base" type="range" min="15" max="85" step="0.01" value="37.64" style="--slider-color: #2563eb;" class="sim-slider" oninput="handleSliderChange('Y_base', this.value)" />
+          </div>
+        </div>
+      </details>
+
     </section>
 
   </main>
@@ -1234,10 +981,7 @@
   <script>
     // ========================================================================
     // CALIBRATED TO USC'S PUBLISHED 2026-2027 ADMISSIONS DATA:
-    // - 79,331 applications received
-    // - 10,006 admitted students (12.61% acceptance rate)
-    // - 3,766 matriculating freshmen (37.64% yield)
-    // PLUS "TWO BITES AT THE APPLE" (1st Shot Early + 2nd Shot in RD)
+    // 79,331 applications | 10,006 admitted (12.61%) | 3,766 enrolled (37.64%)
     // ========================================================================
     const PRESETS = {
       old: {
@@ -1257,23 +1001,6 @@
         Hook_Share_ED: 28,
         Hook_AcceptRate: 95
       },
-      ea_only: {
-        name: 'ea_only',
-        N_total: 79331,
-        C_target: 3766,
-        Y_base: 37.64,
-        S_ED: 0,
-        S_EA: 40,
-        AppShare_ED: 0,
-        AppShare_EA: 36,
-        Defer_rate: 85,
-        Defer_boost: 1.10,
-        Y_ED: 96,
-        Y_EA: 46,
-        Y_RD: 34,
-        Hook_Share_ED: 0,
-        Hook_AcceptRate: 95
-      },
       usc: {
         name: 'usc',
         N_total: 79331,
@@ -1284,7 +1011,7 @@
         AppShare_ED: 8,
         AppShare_EA: 32,
         Defer_rate: 75,
-        Defer_boost: 1.10,
+        Defer_boost: 1.1,
         Y_ED: 96,
         Y_EA: 48,
         Y_RD: 32,
@@ -1301,7 +1028,7 @@
         AppShare_ED: 10,
         AppShare_EA: 32,
         Defer_rate: 75,
-        Defer_boost: 1.10,
+        Defer_boost: 1.1,
         Y_ED: 96,
         Y_EA: 48,
         Y_RD: 30,
@@ -1312,12 +1039,7 @@
 
     let state = { ...PRESETS.usc };
     let activePreset = 'usc';
-    let personalCalc = {
-      type: 'unhooked', // 'unhooked' | 'hooked'
-      round: 'ed'       // 'ed' | 'ea' | 'rd'
-    };
 
-    // --- FORMATTERS ---
     const fmtInt = (n) => Math.round(n).toLocaleString('en-US');
     const fmtPct = (p, digits = 2) => {
       if (!Number.isFinite(p) || p < 0) return 'N/A';
@@ -1334,17 +1056,15 @@
       return yPct / 100;
     }
 
-    // --- CORE MATH ENGINE (INCLUDING 1ST BITE + 2ND BITE IN RD) ---
+    // --- CORE MATH ENGINE ---
     function computeMetrics(s) {
       const N_total = s.N_total;
       const C_target = s.C_target;
       const Y_base_frac = effectiveYieldFraction(s.Y_base, C_target);
 
-      // A. Starting Baseline (Published 2026-27 USC Baseline)
       const Admits_base = Math.round(C_target / Y_base_frac);
       const AcceptRate_base = (Admits_base / N_total) * 100;
 
-      // B. Spots Split
       const S_ED = s.S_ED;
       const S_EA = s.S_EA;
       const S_RD = Math.max(0, 100 - S_ED - S_EA);
@@ -1353,7 +1073,6 @@
       const C_EA = Math.round(C_target * (S_EA / 100));
       const C_RD = Math.max(0, C_target - C_ED - C_EA);
 
-      // Applicants Split
       const AppShare_ED = s.AppShare_ED;
       const AppShare_EA = s.AppShare_EA;
       const AppShare_RD = Math.max(0, 100 - AppShare_ED - AppShare_EA);
@@ -1362,20 +1081,17 @@
       const Apps_EA = Math.round(N_total * (AppShare_EA / 100));
       const Apps_RD_direct = Math.max(0, N_total - Apps_ED - Apps_EA);
 
-      // Yields & Deferral
-      const Y_ED = s.Y_ED / 100;
-      const Y_EA = s.Y_EA / 100;
-      const Y_RD = effectiveYieldFraction(s.Y_RD, C_RD);
+      const Y_ED = Math.max(10, Math.min(100, s.Y_ED)) / 100;
+      const Y_EA = Math.max(10, Math.min(100, s.Y_EA)) / 100;
+      const Y_RD = effectiveYieldFraction(Math.max(10, Math.min(100, s.Y_RD)), C_RD);
       const Defer_rate = s.Defer_rate / 100;
       const Defer_boost = s.Defer_boost || 1.0;
 
-      // C. "The ED Illusion" — Hooked vs Unhooked (1st Bite in ED)
       const Hook_Share_ED = s.Hook_Share_ED / 100;
       const Hook_AcceptRate = s.Hook_AcceptRate / 100;
 
       const Total_ED_Spots = C_ED;
       const Total_ED_Accepted = C_ED > 0 ? Math.round(C_ED / Y_ED) : 0;
-      const Brochure_ED_Rate = Apps_ED > 0 ? (Total_ED_Accepted / Apps_ED) * 100 : 0;
 
       const Hooked_ED_Spots = Math.round(C_ED * Hook_Share_ED);
       const Hooked_ED_Accepted = Hooked_ED_Spots > 0 ? Math.round(Hooked_ED_Spots / Y_ED) : 0;
@@ -1385,88 +1101,66 @@
       const Open_ED_Accepted = Math.max(0, Total_ED_Accepted - Hooked_ED_Accepted);
       const Regular_ED_Apps = Apps_ED - Hooked_ED_Applicants;
       const Real_ED_Rate = Regular_ED_Apps > 0 ? (Open_ED_Accepted / Regular_ED_Apps) * 100 : 0;
-      const ED_Hook_Tax = Brochure_ED_Rate - Real_ED_Rate;
 
-      // D. EA (1st Bite) and RD Pool + 2nd Bite Math
       const Admits_EA = C_EA > 0 ? Math.round(C_EA / Y_EA) : 0;
       const EA_Rate = Apps_EA > 0 ? (Admits_EA / Apps_EA) * 100 : 0;
 
       const Admits_RD = C_RD > 0 ? Math.round(C_RD / Y_RD) : 0;
-      const RD_Direct_NoDefer_Rate = Apps_RD_direct > 0 ? (Admits_RD / Apps_RD_direct) * 100 : 0;
 
-      const Unaccepted_ED = Math.max(0, Apps_ED - Total_ED_Accepted);
+      // Unaccepted regular ED & EA students deferred to RD
+      const Unaccepted_Regular_ED = Math.max(0, Regular_ED_Apps - Open_ED_Accepted);
       const Unaccepted_EA = Math.max(0, Apps_EA - Admits_EA);
-      const Deferred_ED_Count = Math.round(Defer_rate * Unaccepted_ED);
+      const Deferred_ED_Count = Math.round(Defer_rate * Unaccepted_Regular_ED);
       const Deferred_EA_Count = Math.round(Defer_rate * Unaccepted_EA);
-      const Deferred_Count_Raw = Defer_rate * (Unaccepted_ED + Unaccepted_EA);
-      const Deferred_Count = Math.round(Deferred_Count_Raw);
+      const Deferred_Count = Deferred_ED_Count + Deferred_EA_Count;
 
-      const RD_Total_Pool_Exact = Apps_RD_direct + Deferred_Count_Raw;
-      const RD_Total_Pool = Math.round(RD_Total_Pool_Exact);
-      const RD_Blended_Rate = RD_Total_Pool_Exact > 0 ? (Admits_RD / RD_Total_Pool_Exact) * 100 : 0;
+      const RD_Total_Pool = Apps_RD_direct + Deferred_Count;
 
-      // Weighted RD selection rate between Direct RD applicants (weight 1.0) and Deferred Early applicants (weight Defer_boost)
-      // Admits_RD = P_rd_direct * Apps_RD_direct + (Defer_boost * P_rd_direct) * Deferred_Count_Raw
-      const effectiveWeightedPool = Apps_RD_direct + Defer_boost * Deferred_Count_Raw;
+      const effectiveWeightedPool = Apps_RD_direct + Defer_boost * Deferred_Count;
       const RD_Fresh_Applicant_Rate = effectiveWeightedPool > 0
         ? Math.min(100, (Admits_RD / effectiveWeightedPool) * 100)
         : 0;
       const RD_Deferred_Candidate_Rate = Math.min(100, RD_Fresh_Applicant_Rate * Defer_boost);
 
-      // How many of the RD admits go to Deferred ED, Deferred EA, and Fresh RD applicants:
-      const Admits_RD_from_Deferred_EA = Math.round((RD_Deferred_Candidate_Rate / 100) * Deferred_EA_Count);
       const Admits_RD_from_Deferred_ED = Math.round((RD_Deferred_Candidate_Rate / 100) * Deferred_ED_Count);
-      const Admits_RD_from_Fresh_RD = Math.max(0, Admits_RD - Admits_RD_from_Deferred_EA - Admits_RD_from_Deferred_ED);
+      const Admits_RD_from_Deferred_EA = Math.round((RD_Deferred_Candidate_Rate / 100) * Deferred_EA_Count);
+      const Admits_RD_from_Fresh_RD = Math.max(0, Admits_RD - Admits_RD_from_Deferred_ED - Admits_RD_from_Deferred_EA);
 
-      // 2nd Bite & Combined Cumulative Chances for Regular ED and EA Applicants:
-      // For Regular ED Student:
-      // P(Admitted in ED Pass 1) = Real_ED_Rate / 100
-      // P(Not admitted in ED, Deferred to RD, and Admitted in RD Pass 2) = (1 - Real_ED_Rate/100) * Defer_rate * (RD_Deferred_Candidate_Rate/100)
-      const ED_Bite2_Add = (m_edActive => m_edActive
-        ? (1 - Math.min(1, Real_ED_Rate / 100)) * Defer_rate * RD_Deferred_Candidate_Rate
-        : 0)(C_ED > 0 && Regular_ED_Apps > 0);
-      const ED_Combined_Rate = Math.min(100, Real_ED_Rate + ED_Bite2_Add);
+      const ED_Both_Admits = Open_ED_Accepted + Admits_RD_from_Deferred_ED;
+      const ED_Combined_Rate = (C_ED > 0 && Regular_ED_Apps > 0)
+        ? Math.min(100, (ED_Both_Admits / Regular_ED_Apps) * 100)
+        : 0;
+      const ED_Bite2_Add = Math.max(0, ED_Combined_Rate - Real_ED_Rate);
 
-      // For EA Student:
-      // P(Admitted in EA Pass 1) = EA_Rate / 100
-      // P(Not admitted in EA, Deferred to RD, and Admitted in RD Pass 2) = (1 - EA_Rate/100) * Defer_rate * (RD_Deferred_Candidate_Rate/100)
-      const EA_Bite2_Add = (m_eaActive => m_eaActive
-        ? (1 - Math.min(1, EA_Rate / 100)) * Defer_rate * RD_Deferred_Candidate_Rate
-        : 0)(C_EA > 0 && Apps_EA > 0);
-      const EA_Combined_Rate = Math.min(100, EA_Rate + EA_Bite2_Add);
+      const EA_Both_Admits = Admits_EA + Admits_RD_from_Deferred_EA;
+      const EA_Combined_Rate = (C_EA > 0 && Apps_EA > 0)
+        ? Math.min(100, (EA_Both_Admits / Apps_EA) * 100)
+        : 0;
+      const EA_Bite2_Add = Math.max(0, EA_Combined_Rate - EA_Rate);
 
       const Total_New_Accepted = Total_ED_Accepted + Admits_EA + Admits_RD;
       const New_Overall_Rate = (Total_New_Accepted / N_total) * 100;
       const Effective_Yield = Total_New_Accepted > 0 ? (C_target / Total_New_Accepted) * 100 : 0;
 
-      // Validation / Warnings
       const errors = [];
-      const warnings = [];
-
       if (C_ED > 0 && Apps_ED === 0) {
-        errors.push(`Early Decision has ${fmtInt(C_ED)} freshman spots assigned (${S_ED}%), but 0% of applicants are applying in ED.`);
+        errors.push(`Early Decision has ${fmtInt(C_ED)} seats assigned (${S_ED}%), but 0% of applicants are in ED.`);
       } else if (Total_ED_Accepted > Apps_ED && Apps_ED > 0) {
-        errors.push(`Impossible ED Math: Filling ${fmtInt(C_ED)} ED spots at ${s.Y_ED}% yield requires accepting ${fmtInt(Total_ED_Accepted)} students, exceeding the ${fmtInt(Apps_ED)} ED applicants.`);
-      } else if (Hooked_ED_Applicants > Apps_ED && Apps_ED > 0) {
-        errors.push(`Impossible Hook Math: ${fmtInt(Hooked_ED_Applicants)} hooked ED applicants exceed the entire ED applicant pool (${fmtInt(Apps_ED)}).`);
+        errors.push(`Impossible ED Math: Filling ${fmtInt(C_ED)} ED seats requires ${fmtInt(Total_ED_Accepted)} admits, exceeding the ${fmtInt(Apps_ED)} ED applicants.`);
       } else if (Open_ED_Accepted > Regular_ED_Apps && Regular_ED_Apps > 0) {
-        errors.push(`Impossible Regular ED Math: Filling open ED spots requires ${fmtInt(Open_ED_Accepted)} regular admits, but only ${fmtInt(Regular_ED_Apps)} regular students applied in ED.`);
+        errors.push(`Impossible Regular ED Math: Filling open ED seats requires ${fmtInt(Open_ED_Accepted)} regular admits, exceeding the ${fmtInt(Regular_ED_Apps)} regular ED applicants.`);
       }
 
       if (C_EA > 0 && Apps_EA === 0) {
-        errors.push(`Early Action has ${fmtInt(C_EA)} freshman spots assigned (${S_EA}%), but 0% of applicants are applying in EA.`);
+        errors.push(`Early Action has ${fmtInt(C_EA)} seats assigned (${S_EA}%), but 0% of applicants are in EA.`);
       } else if (Admits_EA > Apps_EA && Apps_EA > 0) {
-        errors.push(`Impossible EA Math: Filling ${fmtInt(C_EA)} EA spots at ${s.Y_EA}% yield requires accepting ${fmtInt(Admits_EA)} students, exceeding the ${fmtInt(Apps_EA)} EA applicants.`);
+        errors.push(`Impossible EA Math: Filling ${fmtInt(C_EA)} EA seats requires ${fmtInt(Admits_EA)} admits, exceeding the ${fmtInt(Apps_EA)} EA applicants.`);
       }
 
       if (C_RD > 0 && RD_Total_Pool === 0) {
-        errors.push(`Regular Decision has ${fmtInt(C_RD)} spots left (${S_RD}%), but 0 applicants are in the RD pool.`);
-      } else if (Admits_RD > RD_Total_Pool_Exact && RD_Total_Pool_Exact > 0) {
-        errors.push(`Impossible RD Math: Filling ${fmtInt(C_RD)} RD spots requires accepting ${fmtInt(Admits_RD)} students, exceeding the RD pool of ${fmtInt(RD_Total_Pool)} students.`);
-      }
-
-      if (s.Y_RD > s.Y_EA && S_EA > 0 && S_RD > 0) {
-        warnings.push(`Unusual Yield Setup: Regular Decision yield (${s.Y_RD}%) is set higher than Early Action yield (${s.Y_EA}%).`);
+        errors.push(`Regular Decision has ${fmtInt(C_RD)} seats left (${S_RD}%), but 0 applicants are in the RD pool.`);
+      } else if (Admits_RD > RD_Total_Pool && RD_Total_Pool > 0) {
+        errors.push(`Impossible RD Math: Filling ${fmtInt(C_RD)} RD seats requires ${fmtInt(Admits_RD)} admits, exceeding the RD pool of ${fmtInt(RD_Total_Pool)} students.`);
       }
 
       return {
@@ -1476,152 +1170,102 @@
         Y_ED: s.Y_ED, Y_EA: s.Y_EA, Y_RD: s.Y_RD,
         Defer_rate: s.Defer_rate, Defer_boost,
         Hook_Share_ED: s.Hook_Share_ED, Hook_AcceptRate: s.Hook_AcceptRate,
-        Total_ED_Spots, Total_ED_Accepted, Brochure_ED_Rate,
+        Total_ED_Spots, Total_ED_Accepted,
         Hooked_ED_Spots, Hooked_ED_Accepted, Hooked_ED_Applicants,
-        Open_ED_Spots, Open_ED_Accepted, Regular_ED_Apps, Real_ED_Rate, ED_Hook_Tax,
+        Open_ED_Spots, Open_ED_Accepted, Regular_ED_Apps, Real_ED_Rate,
         Admits_EA, EA_Rate, Admits_RD,
-        RD_Direct_NoDefer_Rate, RD_Blended_Rate,
         RD_Fresh_Applicant_Rate, RD_Deferred_Candidate_Rate,
-        Unaccepted_ED, Unaccepted_EA, Deferred_ED_Count, Deferred_EA_Count, Deferred_Count,
+        Deferred_ED_Count, Deferred_EA_Count, Deferred_Count,
         Admits_RD_from_Deferred_EA, Admits_RD_from_Deferred_ED, Admits_RD_from_Fresh_RD,
-        ED_Bite2_Add, ED_Combined_Rate, EA_Bite2_Add, EA_Combined_Rate,
-        RD_Total_Pool,
-        Total_New_Accepted, New_Overall_Rate, Effective_Yield,
-        errors, warnings
+        ED_Both_Admits, ED_Bite2_Add, ED_Combined_Rate,
+        EA_Both_Admits, EA_Bite2_Add, EA_Combined_Rate,
+        RD_Total_Pool, Total_New_Accepted, New_Overall_Rate, Effective_Yield,
+        errors
       };
     }
 
-    // --- PERSONAL CALCULATOR HANDLER ---
-    function setPersonalCalc(field, value) {
-      personalCalc[field] = value;
-      document.getElementById('calc-type-unhooked').classList.toggle('active', personalCalc.type === 'unhooked');
-      document.getElementById('calc-type-hooked').classList.toggle('active', personalCalc.type === 'hooked');
-      document.getElementById('calc-round-ed').classList.toggle('active', personalCalc.round === 'ed');
-      document.getElementById('calc-round-ea').classList.toggle('active', personalCalc.round === 'ea');
-      document.getElementById('calc-round-rd').classList.toggle('active', personalCalc.round === 'rd');
+    // --- DUAL-HANDLE SPLIT BAR ENGINE ---
+    function initDualBar(trackId, handle1Id, handle2Id, keyED, keyEA) {
+      const track = document.getElementById(trackId);
+      const h1 = document.getElementById(handle1Id);
+      const h2 = document.getElementById(handle2Id);
+
+      function startDrag(whichHandle, e) {
+        e.preventDefault();
+        const handleEl = whichHandle === 1 ? h1 : h2;
+        handleEl.classList.add('dragging');
+
+        function onMove(moveEvent) {
+          const rect = track.getBoundingClientRect();
+          const clientX = moveEvent.touches ? moveEvent.touches[0].clientX : moveEvent.clientX;
+          let pct = Math.round(((clientX - rect.left) / rect.width) * 100);
+          pct = Math.max(0, Math.min(95, pct));
+
+          let pos1 = state[keyED];
+          let pos2 = state[keyED] + state[keyEA];
+
+          if (whichHandle === 1) {
+            pos1 = Math.max(0, Math.min(pct, 80));
+            if (pos1 > pos2) pos2 = pos1;
+          } else {
+            pos2 = Math.max(pos1, Math.min(pct, 92));
+          }
+
+          state[keyED] = pos1;
+          state[keyEA] = Math.max(0, pos2 - pos1);
+          activePreset = null;
+          updatePresetButtons();
+          renderAll();
+        }
+
+        function onUp() {
+          handleEl.classList.remove('dragging');
+          window.removeEventListener('pointermove', onMove);
+          window.removeEventListener('pointerup', onUp);
+        }
+
+        window.addEventListener('pointermove', onMove);
+        window.addEventListener('pointerup', onUp);
+      }
+
+      h1.addEventListener('pointerdown', (e) => startDrag(1, e));
+      h2.addEventListener('pointerdown', (e) => startDrag(2, e));
+
+      function handleKey(whichHandle, e) {
+        if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+        e.preventDefault();
+        const delta = e.key === 'ArrowRight' ? 1 : -1;
+        let pos1 = state[keyED];
+        let pos2 = state[keyED] + state[keyEA];
+        if (whichHandle === 1) {
+          pos1 = Math.max(0, Math.min(pos2, pos1 + delta));
+        } else {
+          pos2 = Math.max(pos1, Math.min(92, pos2 + delta));
+        }
+        state[keyED] = pos1;
+        state[keyEA] = Math.max(0, pos2 - pos1);
+        activePreset = null;
+        updatePresetButtons();
+        renderAll();
+      }
+      h1.addEventListener('keydown', (e) => handleKey(1, e));
+      h2.addEventListener('keydown', (e) => handleKey(2, e));
+    }
+
+    function setDeferBoost(val) {
+      state.Defer_boost = val;
+      document.getElementById('boost-btn-08').classList.toggle('active', Math.abs(val - 0.8) < 0.01);
+      document.getElementById('boost-btn-10').classList.toggle('active', Math.abs(val - 1.0) < 0.01);
+      document.getElementById('boost-btn-11').classList.toggle('active', Math.abs(val - 1.1) < 0.01);
+      activePreset = null;
+      updatePresetButtons();
       renderAll();
     }
 
-    function renderPersonalCalculator(m) {
-      const tagEl = document.getElementById('personal-verdict-tag');
-      const oddsEl = document.getElementById('personal-verdict-odds-ratio');
-      const rateEl = document.getElementById('personal-verdict-rate');
-      const bite1El = document.getElementById('personal-verdict-bite1');
-      const brochureNoteEl = document.getElementById('personal-verdict-brochure-note');
-      const bite2El = document.getElementById('personal-verdict-bite2');
-      const rdRateNoteEl = document.getElementById('personal-verdict-rd-rate-note');
-      const textEl = document.getElementById('personal-verdict-text');
-
-      const isHooked = personalCalc.type === 'hooked';
-      const round = personalCalc.round;
-
-      let totalRate = 0;
-      let bite1 = 0;
-      let bite2 = 0;
-      let color = 'var(--ed-red)';
-      let tagText = '';
-      let explanation = '';
-
-      if (round === 'ed') {
-        color = isHooked ? 'var(--hook-green)' : 'var(--ed-red)';
-        tagEl.className = isHooked ? 'badge badge-green' : 'badge badge-red';
-        tagText = isHooked ? 'Recruited Athlete / Legacy • Early Decision (Binding)' : 'Regular Student • Early Decision (Binding)';
-
-        if (m.C_ED === 0 || m.Apps_ED === 0) {
-          rateEl.textContent = 'No ED Round';
-          rateEl.style.color = 'var(--muted)';
-          bite1El.textContent = 'N/A';
-          brochureNoteEl.textContent = '';
-          bite2El.textContent = 'N/A';
-          rdRateNoteEl.textContent = '';
-          oddsEl.textContent = '0 seats in ED';
-          textEl.innerHTML = `In this scenario, <strong>0 seats</strong> are assigned to Binding Early Decision. Switch to <strong>Scenario 3 (USC + Binding ED)</strong> or pick Early Action / Regular Decision.`;
-          return;
-        }
-
-        if (isHooked) {
-          bite1 = m.Hook_AcceptRate;
-          bite2 = (1 - bite1 / 100) * (m.Defer_rate / 100) * m.RD_Deferred_Candidate_Rate;
-          totalRate = Math.min(100, bite1 + bite2);
-          brochureNoteEl.textContent = `(Pre-screened Hook)`;
-          rdRateNoteEl.textContent = `(if deferred to RD)`;
-          explanation = `Because coaches and admissions pre-screen hooked applicants in Early Decision, <strong>${fmtInt(m.Hooked_ED_Accepted)} of ${fmtInt(m.Hooked_ED_Applicants)}</strong> hooked applicants get accepted on the 1st pass (taking <strong>${fmtInt(m.Hooked_ED_Spots)} of the ${fmtInt(m.C_ED)}</strong> ED seats).`;
-        } else {
-          bite1 = m.Real_ED_Rate;
-          bite2 = m.ED_Bite2_Add;
-          totalRate = m.ED_Combined_Rate;
-          brochureNoteEl.textContent = `(Brochure claims ${fmtPct(m.Brochure_ED_Rate)})`;
-          rdRateNoteEl.textContent = `(${m.Defer_rate}% deferred × ${fmtPct(m.RD_Deferred_Candidate_Rate)} in RD)`;
-          explanation = `<strong>1st Bite (December):</strong> After <strong>${fmtInt(m.Hooked_ED_Spots)} seats (${m.Hook_Share_ED}%)</strong> go to athletes/legacies, your real 1st-pass ED chance is <strong>${fmtPct(bite1)}</strong> (not the brochure's ${fmtPct(m.Brochure_ED_Rate)}). <strong>2nd Bite (March):</strong> If you aren't accepted in December, <strong>${m.Defer_rate}%</strong> are deferred to the RD pool where you have a <strong>${fmtPct(m.RD_Deferred_Candidate_Rate)}</strong> chance—adding <strong>+${fmtPct(bite2)}</strong> for a <strong>${fmtPct(totalRate)} total chance</strong>.`;
-        }
-      } else if (round === 'ea') {
-        color = 'var(--ea-amber)';
-        tagEl.className = 'badge badge-amber';
-        tagText = 'Early Action (Non-Binding — 2 Bites at the Apple)';
-
-        if (m.C_EA === 0 || m.Apps_EA === 0) {
-          rateEl.textContent = 'No EA Round';
-          rateEl.style.color = 'var(--muted)';
-          bite1El.textContent = 'N/A';
-          brochureNoteEl.textContent = '';
-          bite2El.textContent = 'N/A';
-          rdRateNoteEl.textContent = '';
-          oddsEl.textContent = '0 seats in EA';
-          textEl.innerHTML = `In this scenario, <strong>0 seats</strong> are assigned to Early Action. Pick <strong>Regular Decision</strong> or choose Scenario 2 or 3.`;
-          return;
-        }
-
-        bite1 = m.EA_Rate;
-        bite2 = m.EA_Bite2_Add;
-        totalRate = m.EA_Combined_Rate;
-        brochureNoteEl.textContent = `(${fmtInt(m.Admits_EA)} Jan admits)`;
-        rdRateNoteEl.textContent = `(~${fmtInt(m.Admits_RD_from_Deferred_EA)} more admitted in RD)`;
-        explanation = `<strong>Why EA beats waiting for RD:</strong> In January (1st Bite), <strong>${fmtPct(bite1)}</strong> of EA applicants get in right away. The remaining <strong>${fmtPct(100 - bite1)}</strong> aren't all rejected—<strong>${m.Defer_rate}% (${fmtInt(m.Deferred_EA_Count)} students)</strong> are deferred into Regular Decision, where they have a <strong>${fmtPct(m.RD_Deferred_Candidate_Rate)}</strong> chance in March (adding <strong>+${fmtPct(bite2)}</strong>, or ~<strong>${fmtInt(m.Admits_RD_from_Deferred_EA)}</strong> extra admits) for a <strong>${fmtPct(totalRate)} combined chance</strong> with zero binding commitment!`;
-      } else {
-        color = 'var(--rd-blue)';
-        tagEl.className = 'badge badge-blue';
-        tagText = 'Regular Decision Only (1 Shot in March)';
-        bite1 = m.RD_Fresh_Applicant_Rate;
-        bite2 = 0;
-        totalRate = m.RD_Fresh_Applicant_Rate;
-        brochureNoteEl.textContent = `(Direct RD Applicant)`;
-        rdRateNoteEl.textContent = `(No 2nd Bite)`;
-        const lockedSpots = m.C_ED + m.C_EA;
-        const lockedPct = m.S_ED + m.S_EA;
-        explanation = `<strong>Only 1 Shot:</strong> By waiting until Regular Decision, you miss the early rounds completely and compete for the remaining <strong>${fmtInt(m.C_RD)} spots (${m.S_RD}%)</strong> against both <strong>${fmtInt(m.Apps_RD_direct)} direct RD applicants</strong> AND <strong>${fmtInt(m.Deferred_Count)} deferred ED/EA applicants</strong>. Your single-shot chance is <strong>${fmtPct(totalRate)}</strong> (compared to <strong>${fmtPct(m.EA_Combined_Rate)}</strong> if you had applied EA!).`;
-      }
-
-      tagEl.textContent = tagText;
-      rateEl.textContent = fmtPct(totalRate);
-      rateEl.style.color = color;
-      bite1El.textContent = fmtPct(bite1);
-      bite2El.textContent = bite2 > 0 ? `+${fmtPct(bite2)}` : '0.00% (1 shot only)';
-      const oneIn = totalRate > 0 ? Math.max(1, (100 / totalRate)).toFixed(1) : '—';
-      oddsEl.textContent = totalRate > 0 ? `Roughly 1 in ${oneIn} total chance` : 'N/A';
-      textEl.innerHTML = explanation;
-    }
-
-    // --- SLIDER & PRESET HANDLERS ---
     function handleSliderChange(key, rawValue) {
       const val = Number(rawValue);
+      if (!Number.isFinite(val)) return;
       state[key] = val;
-
-      if (key === 'S_ED' && state.S_ED + state.S_EA > 100) {
-        state.S_EA = Math.max(0, 100 - state.S_ED);
-        document.getElementById('slider-s-ea').value = state.S_EA;
-      } else if (key === 'S_EA' && state.S_ED + state.S_EA > 100) {
-        state.S_ED = Math.max(0, 100 - state.S_EA);
-        document.getElementById('slider-s-ed').value = state.S_ED;
-      }
-
-      if (key === 'AppShare_ED' && state.AppShare_ED + state.AppShare_EA > 100) {
-        state.AppShare_EA = Math.max(0, 100 - state.AppShare_ED);
-        document.getElementById('slider-app-ea').value = state.AppShare_EA;
-      } else if (key === 'AppShare_EA' && state.AppShare_ED + state.AppShare_EA > 100) {
-        state.AppShare_ED = Math.max(0, 100 - state.AppShare_EA);
-        document.getElementById('slider-app-ed').value = state.AppShare_ED;
-      }
-
       activePreset = null;
       updatePresetButtons();
       renderAll();
@@ -1636,26 +1280,15 @@
       document.getElementById('slider-n-total').value = state.N_total;
       document.getElementById('slider-c-target').value = state.C_target;
       document.getElementById('slider-y-base').value = state.Y_base;
-      document.getElementById('slider-s-ed').value = state.S_ED;
-      document.getElementById('slider-s-ea').value = state.S_EA;
-      document.getElementById('slider-app-ed').value = state.AppShare_ED;
-      document.getElementById('slider-app-ea').value = state.AppShare_EA;
-      document.getElementById('slider-y-ed').value = state.Y_ED;
-      document.getElementById('slider-y-ea').value = state.Y_EA;
-      document.getElementById('slider-y-rd').value = state.Y_RD;
-      document.getElementById('slider-defer-rate').value = state.Defer_rate;
-      document.getElementById('slider-defer-boost').value = state.Defer_boost;
       document.getElementById('slider-hook-share').value = state.Hook_Share_ED;
-      document.getElementById('slider-hook-accept').value = state.Hook_AcceptRate;
+      document.getElementById('slider-defer-rate').value = state.Defer_rate;
+      document.getElementById('input-y-ed').value = state.Y_ED;
+      document.getElementById('input-y-ea').value = state.Y_EA;
+      document.getElementById('input-y-rd').value = Math.round(state.Y_RD);
 
-      if (presetKey === 'old') {
-        personalCalc.round = 'rd';
-      } else if (presetKey === 'ea_only' && personalCalc.round === 'ed') {
-        personalCalc.round = 'ea';
-      } else if ((presetKey === 'usc' || presetKey === 'heavy_ed') && personalCalc.round === 'rd') {
-        personalCalc.round = 'ed';
-      }
-      setPersonalCalc('round', personalCalc.round);
+      document.getElementById('boost-btn-08').classList.toggle('active', Math.abs(state.Defer_boost - 0.8) < 0.01);
+      document.getElementById('boost-btn-10').classList.toggle('active', Math.abs(state.Defer_boost - 1.0) < 0.01);
+      document.getElementById('boost-btn-11').classList.toggle('active', Math.abs(state.Defer_boost - 1.1) < 0.01);
 
       updatePresetButtons();
       renderAll();
@@ -1664,251 +1297,98 @@
     function updatePresetButtons() {
       const map = {
         old: 'preset-old',
-        ea_only: 'preset-ea-only',
         usc: 'preset-usc',
         heavy_ed: 'preset-heavy-ed'
       };
       Object.entries(map).forEach(([key, id]) => {
         const btn = document.getElementById(id);
-        if (!btn) return;
-        btn.classList.toggle('active', activePreset === key);
+        if (btn) btn.classList.toggle('active', activePreset === key);
       });
     }
 
-    // --- WAFFLE GRID RENDERER ---
+    // --- WAFFLE GRID RENDERER (100 BLOCKS IN 20x5 COMPACT GRID) ---
     function renderWaffleGrid(m) {
       const grid = document.getElementById('ed-waffle-grid');
       if (!grid) return;
-      document.getElementById('waffle-total-spots').textContent = fmtInt(m.C_ED);
 
       if (m.C_ED === 0) {
-        grid.innerHTML = `<div style="grid-column: span 10; padding: 28px 8px; text-align: center; font-size: 12px;" class="muted">No Early Decision Round Active (0 ED Spots)</div>`;
-        document.getElementById('waffle-legend-hook').textContent = `0% (0 spots)`;
-        document.getElementById('waffle-legend-open').textContent = `0% (0 spots)`;
+        grid.innerHTML = `<div style="grid-column: span 20; padding: 14px 6px; text-align: center; font-size: 12px;" class="muted">No Early Decision Round Active (0 ED Seats)</div>`;
+        document.getElementById('waffle-legend-hook').textContent = `0 seats`;
+        document.getElementById('waffle-legend-open').textContent = `0 seats`;
         return;
       }
 
       const hookBlocks = Math.round(m.Hook_Share_ED);
-      const openBlocks = 100 - hookBlocks;
       let html = '';
       for (let i = 0; i < 100; i++) {
         const isHook = i < hookBlocks;
         const bg = isHook ? '#059669' : '#dc2626';
-        const label = isHook
-          ? `Seat block #${i + 1}: Reserved for Recruited Athlete / Legacy`
-          : `Seat block #${i + 1}: Open to Regular Unhooked ED Student`;
-        html += `<div class="waffle-cell" style="background: ${bg};" title="${label}"></div>`;
+        html += `<div class="waffle-cell" style="background: ${bg};"></div>`;
       }
       grid.innerHTML = html;
 
-      document.getElementById('waffle-legend-hook').textContent = `${m.Hook_Share_ED}% (${fmtInt(m.Hooked_ED_Spots)} spots)`;
-      document.getElementById('waffle-legend-open').textContent = `${openBlocks}% (${fmtInt(m.Open_ED_Spots)} spots)`;
+      document.getElementById('waffle-legend-hook').textContent = `${fmtInt(m.Hooked_ED_Spots)} seats (${m.Hook_Share_ED}%)`;
+      document.getElementById('waffle-legend-open').textContent = `${fmtInt(m.Open_ED_Spots)} seats (${100 - m.Hook_Share_ED}%)`;
     }
 
-    // --- SVG SQUEEZE CURVE RENDERER ---
-    function renderSqueezeCurve(m) {
-      const svg = document.getElementById('squeeze-chart-svg');
-      if (!svg) return;
-
-      const width = 600;
-      const height = 255;
-      const padL = 48;
-      const padR = 24;
-      const padT = 24;
-      const padB = 38;
-      const plotW = width - padL - padR;
-      const plotH = height - padT - padB;
-
-      const currentEarlyShare = m.S_ED + m.S_EA;
-      const edShareRatio = currentEarlyShare > 0 ? m.S_ED / currentEarlyShare : (25 / 60);
-
-      const points = [];
-      let maxY = Math.max(16, m.AcceptRate_base * 1.25);
-
-      for (let earlyPct = 0; earlyPct <= 80; earlyPct += 2) {
-        const sED = earlyPct * edShareRatio;
-        const sEA = earlyPct * (1 - edShareRatio);
-        const cED = Math.round(m.C_target * (sED / 100));
-        const cEA = Math.round(m.C_target * (sEA / 100));
-        const cRD = Math.max(0, m.C_target - cED - cEA);
-
-        const admitsED = cED > 0 ? Math.round(cED / (m.Y_ED / 100)) : 0;
-        const admitsEA = cEA > 0 ? Math.round(cEA / (m.Y_EA / 100)) : 0;
-        const admitsRD = cRD > 0 ? Math.round(cRD / effectiveYieldFraction(m.Y_RD, cRD)) : 0;
-
-        const appsED = m.Apps_ED > 0 ? m.Apps_ED : Math.round(m.N_total * 0.08);
-        const appsEA = m.Apps_EA > 0 ? m.Apps_EA : Math.round(m.N_total * 0.32);
-        const appsRDDirect = m.Apps_RD_direct > 0 ? m.Apps_RD_direct : Math.round(m.N_total * 0.60);
-
-        const unaccED = Math.max(0, appsED - admitsED);
-        const unaccEA = Math.max(0, appsEA - admitsEA);
-        const deferred = (m.Defer_rate / 100) * (unaccED + unaccEA);
-
-        const rdDirectRate = appsRDDirect > 0 ? Math.min(100, (admitsRD / appsRDDirect) * 100) : 0;
-        const weightedPool = appsRDDirect + m.Defer_boost * deferred;
-        const rdRealRate = weightedPool > 0 ? Math.min(100, (admitsRD / weightedPool) * 100) : 0;
-
-        if (rdDirectRate > maxY) maxY = rdDirectRate * 1.1;
-        points.push({ earlyPct, rdDirectRate, rdRealRate, cRD });
-      }
-
-      maxY = Math.min(100, Math.ceil(maxY / 2) * 2);
-
-      const xPos = (pct) => padL + (pct / 80) * plotW;
-      const yPos = (rate) => padT + plotH - (Math.min(rate, maxY) / maxY) * plotH;
-
-      const yTicks = 4;
-      let gridHtml = '';
-      for (let i = 0; i <= yTicks; i++) {
-        const val = (maxY / yTicks) * i;
-        const y = yPos(val);
-        gridHtml += `
-          <line x1="${padL}" y1="${y}" x2="${width - padR}" y2="${y}" stroke="currentColor" stroke-opacity="0.12" stroke-width="1" />
-          <text x="${padL - 8}" y="${y + 4}" text-anchor="end" font-size="12" fill="currentColor" opacity="0.65">${val.toFixed(0)}%</text>
-        `;
-      }
-
-      let xTicksHtml = '';
-      [0, 20, 40, 60, 80].forEach((pct) => {
-        const x = xPos(pct);
-        xTicksHtml += `
-          <line x1="${x}" y1="${padT + plotH}" x2="${x}" y2="${padT + plotH + 5}" stroke="currentColor" stroke-opacity="0.3" />
-          <text x="${x}" y="${padT + plotH + 19}" text-anchor="middle" font-size="12" fill="currentColor" opacity="0.65">${pct}%</text>
-        `;
-      });
-
-      const axisLabelHtml = `
-        <text x="${padL + plotW / 2}" y="${height - 2}" text-anchor="middle" font-size="12" font-weight="600" fill="currentColor" opacity="0.75">
-          % of Freshman Class Locked Up Early (ED + EA Combined)
-        </text>
-      `;
-
-      const yOld = yPos(m.AcceptRate_base);
-      const baselineHtml = `
-        <line x1="${padL}" y1="${yOld}" x2="${width - padR}" y2="${yOld}" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="5,4" />
-        <text x="${width - padR - 4}" y="${Math.max(14, yOld - 6)}" text-anchor="end" font-size="12" font-weight="600" fill="#94a3b8">
-          2026–27 Baseline: ${fmtPct(m.AcceptRate_base)}
-        </text>
-      `;
-
-      const directPath = points.map((p, idx) => `${idx === 0 ? 'M' : 'L'} ${xPos(p.earlyPct).toFixed(1)} ${yPos(p.rdDirectRate).toFixed(1)}`).join(' ');
-      const realPath = points.map((p, idx) => `${idx === 0 ? 'M' : 'L'} ${xPos(p.earlyPct).toFixed(1)} ${yPos(p.rdRealRate).toFixed(1)}`).join(' ');
-      const areaPath = `${realPath} L ${xPos(80).toFixed(1)} ${(padT + plotH).toFixed(1)} L ${xPos(0).toFixed(1)} ${(padT + plotH).toFixed(1)} Z`;
-
-      const clampedEarly = Math.min(80, currentEarlyShare);
-      const curX = xPos(clampedEarly);
-      const curYReal = yPos(m.RD_Fresh_Applicant_Rate);
-      const curYDirect = yPos(m.RD_Direct_NoDefer_Rate);
-
-      const markerHtml = `
-        <line x1="${curX}" y1="${padT}" x2="${curX}" y2="${padT + plotH}" stroke="#dc2626" stroke-width="1.5" stroke-dasharray="3,3" />
-        <circle cx="${curX}" cy="${curYDirect}" r="4.5" fill="#0ea5e9" stroke="#ffffff" stroke-width="1.5" />
-        <circle cx="${curX}" cy="${curYReal}" r="6" fill="#2563eb" stroke="#ffffff" stroke-width="2" />
-        <g transform="translate(${Math.min(width - 165, Math.max(padL + 6, curX - 72))}, ${Math.max(padT + 4, curYReal - 34)})">
-          <rect width="144" height="24" rx="6" fill="#1e3a8a" opacity="0.94" />
-          <text x="72" y="16" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">
-            Now (${currentEarlyShare}% Early): ${fmtPct1(m.RD_Fresh_Applicant_Rate)}
-          </text>
-        </g>
-      `;
-
-      svg.innerHTML = `
-        <defs>
-          <linearGradient id="rdAreaGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#2563eb" stop-opacity="0.22" />
-            <stop offset="100%" stop-color="#2563eb" stop-opacity="0.02" />
-          </linearGradient>
-        </defs>
-        ${gridHtml}
-        ${xTicksHtml}
-        ${axisLabelHtml}
-        <path d="${areaPath}" fill="url(#rdAreaGrad)" />
-        ${baselineHtml}
-        <path d="${directPath}" fill="none" stroke="#0ea5e9" stroke-width="2" stroke-dasharray="4,3" />
-        <path d="${realPath}" fill="none" stroke="#2563eb" stroke-width="3" />
-        ${markerHtml}
-      `;
-
-      document.getElementById('curve-leg-old').textContent = fmtPct(m.AcceptRate_base);
-      const pt80 = points[points.length - 1];
-      document.getElementById('rd-squeeze-callout').innerHTML = `
-        At your current setting (<strong class="tabular">${currentEarlyShare}%</strong> of class filled in ED + EA), <strong class="tabular">${fmtInt(m.C_RD)}</strong> seats remain for <strong class="tabular">${fmtInt(m.RD_Total_Pool)}</strong> RD + deferred applicants—squeezing a direct RD applicant's single-shot chance to <strong class="tabular" style="color: var(--rd-blue);">${fmtPct(m.RD_Fresh_Applicant_Rate)}</strong> (and down to <strong class="tabular">${fmtPct1(pt80.rdRealRate)}</strong> if 80% of the class is filled early).
-      `;
-    }
-
-    // --- TABLE & TAKEAWAYS RENDERER ---
-    function renderTableAndTakeaways(m) {
+    // --- TABLE RENDERER (CLEAN NEUTRAL TEXT COLORS, NO RANDOM COLORED NUMBERS) ---
+    function renderTable(m) {
       const tbody = document.getElementById('breakdown-table-body');
       const edActive = m.S_ED > 0 || m.AppShare_ED > 0;
       const eaActive = m.S_EA > 0 || m.AppShare_EA > 0;
+      const regApps = Math.max(0, m.Regular_ED_Apps);
 
       tbody.innerHTML = `
         <tr style="font-weight: 600;">
-          <td><span style="color: var(--ed-red);">●</span> <strong>Early Decision (ED — Binding)</strong> (All ED)</td>
-          <td class="text-right">${fmtInt(m.Apps_ED)} <span class="muted">(${m.AppShare_ED}%)</span></td>
-          <td class="text-right">${fmtInt(m.Total_ED_Accepted)} <span class="muted" style="font-size: 12px;">(+${fmtInt(m.Admits_RD_from_Deferred_ED)} in RD)</span></td>
-          <td class="text-right">${edActive && m.Apps_ED > 0 ? fmtPct(m.Brochure_ED_Rate) : '—'} <span class="muted" style="font-size: 12px; display: block;">brochure</span></td>
-          <td class="text-right" style="color: var(--rd-blue);">${edActive && m.Apps_ED > 0 ? `+${fmtPct(m.ED_Bite2_Add)}` : '—'}</td>
-          <td class="text-right" style="color: var(--ed-red); font-weight: 700;">${edActive && m.Regular_ED_Apps > 0 ? fmtPct(m.ED_Combined_Rate) : '—'} <span class="muted" style="font-size: 12px; display: block;">unhooked total</span></td>
-          <td class="text-right">${m.Y_ED}%</td>
-          <td class="text-right">${fmtInt(m.C_ED)} <span class="muted">(${m.S_ED}%)</span></td>
-        </tr>
-        <tr style="background: var(--subtle-bg); font-size: 12px;">
-          <td style="padding-left: 28px; color: var(--hook-green); font-weight: 600;">↳ Recruited Athletes &amp; Legacies ("Hooked")</td>
-          <td class="text-right">${edActive ? fmtInt(m.Hooked_ED_Applicants) : '0'}</td>
-          <td class="text-right">${edActive ? fmtInt(m.Hooked_ED_Accepted) : '0'}</td>
-          <td class="text-right" style="color: var(--hook-green); font-weight: 700;">${edActive && m.Hooked_ED_Spots > 0 ? fmtPct1(m.Hook_AcceptRate) : '—'}</td>
-          <td class="text-right muted">Pre-screened</td>
-          <td class="text-right" style="color: var(--hook-green); font-weight: 700;">${edActive && m.Hooked_ED_Spots > 0 ? fmtPct1(m.Hook_AcceptRate) : '—'}</td>
-          <td class="text-right">${m.Y_ED}%</td>
-          <td class="text-right">${edActive ? fmtInt(m.Hooked_ED_Spots) : '0'} <span class="muted">(${m.Hook_Share_ED}% of ED)</span></td>
-        </tr>
-        <tr style="background: var(--subtle-bg); font-size: 12px;">
-          <td style="padding-left: 28px; color: var(--ed-red); font-weight: 600;">↳ Regular High School Students ("Unhooked" in ED)</td>
-          <td class="text-right">${edActive ? fmtInt(Math.max(0, m.Regular_ED_Apps)) : '0'}</td>
-          <td class="text-right">${edActive ? fmtInt(m.Open_ED_Accepted) : '0'} <span class="muted">(+${fmtInt(m.Admits_RD_from_Deferred_ED)} in RD)</span></td>
-          <td class="text-right" style="color: var(--ed-red); font-weight: 700;">${edActive && m.Regular_ED_Apps > 0 ? fmtPct(m.Real_ED_Rate) : '—'}</td>
-          <td class="text-right" style="color: var(--rd-blue); font-weight: 700;">${edActive && m.Regular_ED_Apps > 0 ? `+${fmtPct(m.ED_Bite2_Add)}` : '—'}</td>
-          <td class="text-right" style="color: var(--ed-red); font-weight: 700;">${edActive && m.Regular_ED_Apps > 0 ? fmtPct(m.ED_Combined_Rate) : '—'}</td>
+          <td><span style="color: var(--ed-red);">●</span> <strong>Early Decision — Regular Students (Unhooked)</strong></td>
+          <td class="text-right">${edActive ? fmtInt(regApps) : '0'}</td>
+          <td class="text-right">${edActive ? fmtInt(m.Open_ED_Accepted) : '0'}</td>
+          <td class="text-right"><strong>${edActive && regApps > 0 ? fmtPct(m.Real_ED_Rate) : '—'}</strong></td>
+          <td class="text-right">${edActive && regApps > 0 ? `+${fmtInt(m.Admits_RD_from_Deferred_ED)} (+${fmtPct(m.ED_Bite2_Add)})` : '—'}</td>
+          <td class="text-right"><strong>${edActive && regApps > 0 ? `${fmtInt(m.ED_Both_Admits)} (${fmtPct(m.ED_Combined_Rate)})` : '—'}</strong></td>
           <td class="text-right">${m.Y_ED}%</td>
           <td class="text-right">${edActive ? fmtInt(m.Open_ED_Spots) : '0'} <span class="muted">(${100 - m.Hook_Share_ED}% of ED)</span></td>
+        </tr>
+        <tr style="background: var(--subtle-bg); font-size: 12px;">
+          <td style="padding-left: 26px;"><span style="color: var(--hook-green);">●</span> Early Decision — Recruited Athletes &amp; Legacies ("Hooked")</td>
+          <td class="text-right">${edActive ? fmtInt(m.Hooked_ED_Applicants) : '0'}</td>
+          <td class="text-right">${edActive ? fmtInt(m.Hooked_ED_Accepted) : '0'}</td>
+          <td class="text-right"><strong>${edActive && m.Hooked_ED_Spots > 0 ? fmtPct1(m.Hook_AcceptRate) : '—'}</strong></td>
+          <td class="text-right muted">Pre-screened</td>
+          <td class="text-right"><strong>${edActive && m.Hooked_ED_Spots > 0 ? `${fmtInt(m.Hooked_ED_Accepted)} (${fmtPct1(m.Hook_AcceptRate)})` : '—'}</strong></td>
+          <td class="text-right">${m.Y_ED}%</td>
+          <td class="text-right">${edActive ? fmtInt(m.Hooked_ED_Spots) : '0'} <span class="muted">(${m.Hook_Share_ED}% of ED)</span></td>
         </tr>
         <tr style="font-weight: 600;">
           <td><span style="color: var(--ea-amber);">●</span> <strong>Early Action (EA — Non-Binding)</strong></td>
           <td class="text-right">${fmtInt(m.Apps_EA)} <span class="muted">(${m.AppShare_EA}%)</span></td>
-          <td class="text-right">${fmtInt(m.Admits_EA)} <span class="muted" style="font-size: 12px;">(+${fmtInt(m.Admits_RD_from_Deferred_EA)} in RD)</span></td>
-          <td class="text-right" style="color: var(--ea-amber); font-weight: 700;">${eaActive && m.Apps_EA > 0 ? fmtPct(m.EA_Rate) : '—'}</td>
-          <td class="text-right" style="color: var(--rd-blue); font-weight: 700;">${eaActive && m.Apps_EA > 0 ? `+${fmtPct(m.EA_Bite2_Add)}` : '—'}</td>
-          <td class="text-right" style="color: var(--ea-amber); font-weight: 700;">${eaActive && m.Apps_EA > 0 ? fmtPct(m.EA_Combined_Rate) : '—'}</td>
+          <td class="text-right">${fmtInt(m.Admits_EA)}</td>
+          <td class="text-right"><strong>${eaActive && m.Apps_EA > 0 ? fmtPct(m.EA_Rate) : '—'}</strong></td>
+          <td class="text-right">${eaActive && m.Apps_EA > 0 ? `+${fmtInt(m.Admits_RD_from_Deferred_EA)} (+${fmtPct(m.EA_Bite2_Add)})` : '—'}</td>
+          <td class="text-right"><strong>${eaActive && m.Apps_EA > 0 ? `${fmtInt(m.EA_Both_Admits)} (${fmtPct(m.EA_Combined_Rate)})` : '—'}</strong></td>
           <td class="text-right">${m.Y_EA}%</td>
           <td class="text-right">${fmtInt(m.C_EA)} <span class="muted">(${m.S_EA}%)</span></td>
         </tr>
         <tr style="font-weight: 600;">
           <td>
-            <span style="color: var(--rd-blue);">●</span> <strong>Regular Decision (RD — 1 Shot Only)</strong>
-            <div class="muted" style="font-size: 12px; font-weight: 400;">Direct: ${fmtInt(m.Apps_RD_direct)} + Deferred: ${fmtInt(m.Deferred_Count)}</div>
+            <span style="color: var(--rd-blue);">●</span> <strong>Regular Decision (RD — Direct Applicants, 1 Shot Only)</strong>
+            <div class="muted" style="font-size: 11px; font-weight: 400;">Total RD Pool: ${fmtInt(m.RD_Total_Pool)} (${fmtInt(m.Apps_RD_direct)} direct + ${fmtInt(m.Deferred_Count)} deferred early kids)</div>
           </td>
-          <td class="text-right">
-            <div>${fmtInt(m.RD_Total_Pool)} <span class="muted" style="font-size: 12px;">total pool</span></div>
-            <div class="muted" style="font-size: 12px;">${fmtInt(m.Apps_RD_direct)} direct</div>
-          </td>
-          <td class="text-right">
-            <div>${fmtInt(m.Admits_RD)} total</div>
-            <div class="muted" style="font-size: 12px;">(${fmtInt(m.Admits_RD_from_Fresh_RD)} direct / ${fmtInt(m.Admits_RD_from_Deferred_EA + m.Admits_RD_from_Deferred_ED)} def)</div>
-          </td>
-          <td class="text-right" style="color: var(--rd-blue); font-weight: 700;">${m.RD_Total_Pool > 0 ? fmtPct(m.RD_Fresh_Applicant_Rate) : '—'} <span class="muted" style="font-size: 12px; display: block;">direct RD</span></td>
+          <td class="text-right">${fmtInt(m.Apps_RD_direct)} <span class="muted">(${m.AppShare_RD}%)</span></td>
+          <td class="text-right">${fmtInt(m.Admits_RD_from_Fresh_RD)} <span class="muted" style="font-size: 12px;">(${fmtInt(m.Admits_RD)} total in RD)</span></td>
+          <td class="text-right"><strong>${m.RD_Total_Pool > 0 ? fmtPct(m.RD_Fresh_Applicant_Rate) : '—'}</strong></td>
           <td class="text-right muted">None (Final Round)</td>
-          <td class="text-right" style="color: var(--rd-blue); font-weight: 700;">${m.RD_Total_Pool > 0 ? fmtPct(m.RD_Fresh_Applicant_Rate) : '—'}</td>
-          <td class="text-right">${m.Y_RD}%</td>
+          <td class="text-right"><strong>${m.RD_Total_Pool > 0 ? `${fmtInt(m.Admits_RD_from_Fresh_RD)} (${fmtPct(m.RD_Fresh_Applicant_Rate)})` : '—'}</strong></td>
+          <td class="text-right">${Math.round(m.Y_RD)}%</td>
           <td class="text-right">${fmtInt(m.C_RD)} <span class="muted">(${m.S_RD}%)</span></td>
         </tr>
         <tr style="background: var(--subtle-bg); font-weight: 700;">
-          <td>New Combined Total (ED + EA + RD)</td>
+          <td>Overall Total (ED + EA + RD Combined)</td>
           <td class="text-right">${fmtInt(m.N_total)}</td>
-          <td class="text-right">${fmtInt(m.Total_New_Accepted)}</td>
+          <td class="text-right">${fmtInt(m.Total_ED_Accepted + m.Admits_EA + m.Admits_RD_from_Fresh_RD)}</td>
           <td class="text-right">${fmtPct(m.New_Overall_Rate)}</td>
-          <td class="text-right muted">—</td>
-          <td class="text-right" style="color: var(--select-purple);">${fmtPct(m.New_Overall_Rate)}</td>
+          <td class="text-right">${fmtInt(m.Admits_RD_from_Deferred_ED + m.Admits_RD_from_Deferred_EA)} deferred admits</td>
+          <td class="text-right">${fmtInt(m.Total_New_Accepted)} (${fmtPct(m.New_Overall_Rate)})</td>
           <td class="text-right">${fmtPct(m.Effective_Yield)}</td>
           <td class="text-right">${fmtInt(m.C_target)} (100%)</td>
         </tr>
@@ -1918,48 +1398,16 @@
           <td class="text-right">${fmtInt(m.Admits_base)}</td>
           <td class="text-right">${fmtPct(m.AcceptRate_base)}</td>
           <td class="text-right">—</td>
-          <td class="text-right"><strong>${fmtPct(m.AcceptRate_base)}</strong></td>
+          <td class="text-right"><strong>${fmtInt(m.Admits_base)} (${fmtPct(m.AcceptRate_base)})</strong></td>
           <td class="text-right">${fmtPct(m.Y_base)}</td>
           <td class="text-right">${fmtInt(m.C_target)} (100%)</td>
         </tr>
       `;
-
-      const earlySpotsTaken = m.C_ED + m.C_EA;
-      const earlyShareTaken = m.S_ED + m.S_EA;
-      const admitDiff = m.Admits_base - m.Total_New_Accepted;
-
-      const bullet1 = (m.C_ED > 0 && m.Apps_ED > 0)
-        ? `<li class="subtle-box stack-sm" style="font-size: 13px;">
-             <div style="font-weight: 700; color: var(--ed-red);">1. The ED Hook Tax vs. The "2nd Bite"</div>
-             <p>Because <strong>${m.Hook_Share_ED}% of ED spots</strong> (<strong>${fmtInt(m.Hooked_ED_Spots)}</strong> seats) go to athletes and legacies, a regular student's <strong>1st Bite in ED is ${fmtPct(m.Real_ED_Rate)}</strong> (not the brochure's ${fmtPct(m.Brochure_ED_Rate)}). However, because <strong>${m.Defer_rate}%</strong> of unaccepted ED applicants are deferred to RD for a 2nd Bite (<strong>+${fmtPct(m.ED_Bite2_Add)}</strong>), their combined 2-round chance reaches <strong>${fmtPct(m.ED_Combined_Rate)}</strong>.</p>
-           </li>`
-        : `<li class="subtle-box stack-sm" style="font-size: 13px;">
-             <div style="font-weight: 700; color: var(--ed-red);">1. No Binding Early Decision Active</div>
-             <p>With <strong>0%</strong> of the class assigned to Binding Early Decision, no seats are locked up in a binding round before Early Action or Regular Decision.</p>
-           </li>`;
-
-      const bullet2 = `
-        <li class="subtle-box stack-sm" style="font-size: 13px;">
-          <div style="font-weight: 700; color: var(--ea-amber);">2. Why Early Action (EA) Beats Waiting for RD</div>
-          <p>An Early Action applicant gets <strong>Two Bites at the Apple</strong>: a <strong>${fmtPct(m.EA_Rate)}</strong> chance in January (<strong>${fmtInt(m.Admits_EA)}</strong> admits) PLUS, if deferred, a <strong>${fmtPct(m.RD_Deferred_Candidate_Rate)}</strong> chance in March (adding <strong>+${fmtPct(m.EA_Bite2_Add)}</strong>, or ~<strong>${fmtInt(m.Admits_RD_from_Deferred_EA)}</strong> more admits) for a <strong>${fmtPct(m.EA_Combined_Rate)} total chance</strong>—compared to just <strong>${fmtPct(m.RD_Fresh_Applicant_Rate)}</strong> for someone who waits for Regular Decision!</p>
-        </li>
-      `;
-
-      const bullet3 = `
-        <li class="subtle-box stack-sm" style="font-size: 13px;">
-          <div style="font-weight: 700; color: var(--select-purple);">3. Why the RD Pool Gets Doubly Squeezed</div>
-          <p>Students who wait for Regular Decision get hit twice: <strong>${fmtInt(earlySpotsTaken)} spots (${earlyShareTaken}%)</strong> are already gone in ED/EA, AND <strong>${fmtInt(m.Deferred_Count)} deferred early applicants</strong> flood into the RD pile (taking ~<strong>${fmtInt(m.Admits_RD_from_Deferred_EA + m.Admits_RD_from_Deferred_ED)}</strong> of the <strong>${fmtInt(m.Admits_RD)}</strong> RD acceptances). Meanwhile, USC sends <strong>${fmtInt(Math.abs(admitDiff))} fewer acceptance letters overall</strong> because of high early yield.</p>
-        </li>
-      `;
-
-      document.getElementById('takeaways-list').innerHTML = bullet1 + bullet2 + bullet3;
     }
 
     // --- MASTER RENDER ---
     function renderAll() {
       const m = computeMetrics(state);
-
-      renderPersonalCalculator(m);
 
       // Warning Banner
       const banner = document.getElementById('warning-banner');
@@ -1972,170 +1420,103 @@
         banner.style.borderColor = 'var(--ed-red)';
         banner.style.background = 'var(--ed-red-soft)';
         icon.textContent = '🚨';
-        title.textContent = 'Impossible Admissions Math Detected — Please Adjust Sliders:';
+        title.textContent = 'Impossible Admissions Math — Adjust Handles or Controls:';
         list.innerHTML = m.errors.map((e) => `<li>${e}</li>`).join('');
-      } else if (m.warnings.length > 0) {
-        banner.className = 'subtle-box';
-        banner.style.borderColor = 'var(--ea-amber)';
-        banner.style.background = 'var(--ea-amber-soft)';
-        icon.textContent = '⚠️';
-        title.textContent = 'Heads Up — Unusual Admissions Setup:';
-        list.innerHTML = m.warnings.map((w) => `<li>${w}</li>`).join('');
       } else {
         banner.className = 'hidden';
       }
 
-      // Slider Card 1
-      document.getElementById('val-n-total').textContent = `${fmtInt(m.N_total)} students`;
-      document.getElementById('val-c-target').textContent = `${fmtInt(m.C_target)} spots`;
-      document.getElementById('val-y-base').textContent = `${fmtPct(m.Y_base)}`;
-      document.getElementById('summary-old-admits').textContent = fmtInt(m.Admits_base);
-      document.getElementById('summary-old-spots').textContent = fmtInt(m.C_target);
-      document.getElementById('summary-old-rate').textContent = fmtPct(m.AcceptRate_base);
-
-      // Slider Card 2
-      document.getElementById('val-s-ed').textContent = `${m.S_ED}% (${fmtInt(m.C_ED)} spots)`;
-      document.getElementById('val-s-ea').textContent = `${m.S_EA}% (${fmtInt(m.C_EA)} spots)`;
-      document.getElementById('bar-spots-ed').style.width = `${m.S_ED}%`;
-      document.getElementById('bar-spots-ea').style.width = `${m.S_EA}%`;
-      document.getElementById('bar-spots-rd').style.width = `${m.S_RD}%`;
+      // Control Card A: Dual Split Bars
+      document.getElementById('lbl-total-seats').textContent = fmtInt(m.C_target);
+      document.getElementById('seg-spots-ed').style.width = `${m.S_ED}%`;
+      document.getElementById('seg-spots-ed').textContent = m.S_ED >= 10 ? `${m.S_ED}%` : '';
+      document.getElementById('seg-spots-ea').style.width = `${m.S_EA}%`;
+      document.getElementById('seg-spots-ea').textContent = m.S_EA >= 10 ? `${m.S_EA}%` : '';
+      document.getElementById('seg-spots-rd').style.width = `${m.S_RD}%`;
+      document.getElementById('seg-spots-rd').textContent = m.S_RD >= 10 ? `${m.S_RD}%` : '';
+      document.getElementById('handle-spots-1').style.left = `${m.S_ED}%`;
+      document.getElementById('handle-spots-2').style.left = `${m.S_ED + m.S_EA}%`;
       document.getElementById('lbl-spots-ed').textContent = `${m.S_ED}% (${fmtInt(m.C_ED)})`;
       document.getElementById('lbl-spots-ea').textContent = `${m.S_EA}% (${fmtInt(m.C_EA)})`;
       document.getElementById('lbl-spots-rd').textContent = `${m.S_RD}% (${fmtInt(m.C_RD)})`;
 
-      document.getElementById('val-app-ed').textContent = `${m.AppShare_ED}% (${fmtInt(m.Apps_ED)} apps)`;
-      document.getElementById('val-app-ea').textContent = `${m.AppShare_EA}% (${fmtInt(m.Apps_EA)} apps)`;
-      document.getElementById('bar-apps-ed').style.width = `${m.AppShare_ED}%`;
-      document.getElementById('bar-apps-ea').style.width = `${m.AppShare_EA}%`;
-      document.getElementById('bar-apps-rd').style.width = `${m.AppShare_RD}%`;
+      document.getElementById('lbl-total-apps').textContent = fmtInt(m.N_total);
+      document.getElementById('seg-apps-ed').style.width = `${m.AppShare_ED}%`;
+      document.getElementById('seg-apps-ed').textContent = m.AppShare_ED >= 10 ? `${m.AppShare_ED}%` : '';
+      document.getElementById('seg-apps-ea').style.width = `${m.AppShare_EA}%`;
+      document.getElementById('seg-apps-ea').textContent = m.AppShare_EA >= 10 ? `${m.AppShare_EA}%` : '';
+      document.getElementById('seg-apps-rd').style.width = `${m.AppShare_RD}%`;
+      document.getElementById('seg-apps-rd').textContent = m.AppShare_RD >= 10 ? `${m.AppShare_RD}%` : '';
+      document.getElementById('handle-apps-1').style.left = `${m.AppShare_ED}%`;
+      document.getElementById('handle-apps-2').style.left = `${m.AppShare_ED + m.AppShare_EA}%`;
       document.getElementById('lbl-apps-ed').textContent = `${m.AppShare_ED}% (${fmtInt(m.Apps_ED)})`;
       document.getElementById('lbl-apps-ea').textContent = `${m.AppShare_EA}% (${fmtInt(m.Apps_EA)})`;
       document.getElementById('lbl-apps-rd').textContent = `${m.AppShare_RD}% (${fmtInt(m.Apps_RD_direct)})`;
 
-      // Slider Card 3 & 4
-      document.getElementById('val-y-ed').textContent = `${m.Y_ED}% (Binding)`;
-      document.getElementById('val-y-ea').textContent = `${m.Y_EA}% (Non-Binding)`;
-      document.getElementById('val-y-rd').textContent = `${m.Y_RD}% (Regular)`;
-      document.getElementById('val-defer-rate').textContent = `${m.Defer_rate}% (+${fmtInt(m.Deferred_Count)} apps)`;
-
-      const boostWord = m.Defer_boost > 1.01 ? 'Early Interest Boost' : (m.Defer_boost < 0.99 ? 'Penalty in RD' : 'Equal Odds');
-      document.getElementById('val-defer-boost').textContent = `${m.Defer_boost.toFixed(2)}x (${boostWord})`;
-
-      document.getElementById('val-hook-share').textContent = `${m.Hook_Share_ED}% (${fmtInt(m.Hooked_ED_Spots)} spots)`;
-      document.getElementById('val-hook-accept').textContent = `${m.Hook_AcceptRate}%`;
-      document.getElementById('hook-box-summary').textContent = `${fmtInt(m.Hooked_ED_Applicants)} apply → ${fmtInt(m.Hooked_ED_Accepted)} accepted (${m.Hook_AcceptRate}%)`;
-      document.getElementById('hook-box-spots').textContent = fmtInt(m.Hooked_ED_Spots);
-      document.getElementById('hook-box-total-spots').textContent = fmtInt(m.C_ED);
-      document.getElementById('unhook-box-summary').textContent = `${fmtInt(Math.max(0, m.Regular_ED_Apps))} apply → ${fmtInt(m.Open_ED_Accepted)} accepted (${m.C_ED > 0 && m.Regular_ED_Apps > 0 ? fmtPct(m.Real_ED_Rate) : '0%'})`;
-      document.getElementById('unhook-box-spots').textContent = fmtInt(m.Open_ED_Spots);
-
-      // Scoreboard Cards A, B, C, D
-      const edActive = m.C_ED > 0 && m.Apps_ED > 0;
-      document.getElementById('score-ed-real').textContent = edActive ? fmtPct(m.Real_ED_Rate) : 'N/A';
-      document.getElementById('score-ed-brochure').textContent = edActive ? fmtPct(m.Brochure_ED_Rate) : '0.00%';
-      document.getElementById('badge-ed-tax').textContent = edActive
-        ? `Hook Tax: -${fmtPct1(Math.max(0, m.ED_Hook_Tax))}`
-        : 'No ED Round';
-      document.getElementById('score-ed-bite2').textContent = edActive
-        ? `+${fmtPct(m.ED_Bite2_Add)} (${fmtPct(m.ED_Combined_Rate)} total)`
-        : 'N/A';
-      document.getElementById('score-ed-open-admits').textContent = `${fmtInt(m.Open_ED_Accepted)} of ${fmtInt(Math.max(0, m.Regular_ED_Apps))} apps`;
-      document.getElementById('score-ed-hook-spots').textContent = `${fmtInt(m.Hooked_ED_Spots)} spots (${fmtInt(m.Hooked_ED_Accepted)} admits)`;
-
-      const eaActive = m.C_EA > 0 && m.Apps_EA > 0;
-      document.getElementById('score-ea-rate').textContent = eaActive ? fmtPct(m.EA_Rate) : 'N/A';
-      document.getElementById('badge-ea-yield').textContent = `${m.Y_EA}% Yield`;
-      document.getElementById('score-ea-vs-old').textContent = eaActive
-        ? `${fmtPct(m.EA_Combined_Rate)} w/ 2nd Bite`
-        : 'No EA Round';
-      document.getElementById('score-ea-bite2').textContent = eaActive
-        ? `+${fmtPct(m.EA_Bite2_Add)} (${fmtPct(m.EA_Combined_Rate)} total)`
-        : 'N/A';
-      document.getElementById('score-ea-admits').textContent = `${fmtInt(m.Admits_EA)} of ${fmtInt(m.Apps_EA)} apps`;
-      document.getElementById('score-ea-deferred-admits').textContent = eaActive
-        ? `~${fmtInt(m.Admits_RD_from_Deferred_EA)} more in RD`
-        : '0';
-
-      const rdSqueezeDiff = m.RD_Fresh_Applicant_Rate - m.AcceptRate_base;
-      document.getElementById('score-rd-real').textContent = m.RD_Total_Pool > 0 ? fmtPct(m.RD_Fresh_Applicant_Rate) : 'N/A';
-      document.getElementById('score-rd-old-ref').textContent = fmtPct(m.AcceptRate_base);
-      document.getElementById('badge-rd-squeeze').textContent = `${rdSqueezeDiff <= 0 ? '' : '+'}${rdSqueezeDiff.toFixed(2)}% vs. Old`;
-      document.getElementById('score-rd-defer-rate-val').textContent = `${fmtPct(m.RD_Deferred_Candidate_Rate)} (${m.Defer_boost.toFixed(2)}x vs RD)`;
-      document.getElementById('score-rd-pool').textContent = `${fmtInt(m.RD_Total_Pool)} students`;
-      document.getElementById('score-rd-spots').textContent = `${fmtInt(m.C_RD)} of ${fmtInt(m.C_target)} (${m.S_RD}%)`;
-
-      const overallAdmitDiff = m.Admits_base - m.Total_New_Accepted;
-      document.getElementById('score-overall-new').textContent = fmtPct(m.New_Overall_Rate);
-      document.getElementById('score-overall-old').textContent = fmtPct(m.AcceptRate_base);
-      document.getElementById('badge-overall-drop').textContent = overallAdmitDiff >= 0
-        ? `${fmtInt(overallAdmitDiff)} Fewer Admits`
-        : `${fmtInt(Math.abs(overallAdmitDiff))} More Admits`;
-      document.getElementById('score-overall-admits-new').textContent = `${fmtInt(m.Total_New_Accepted)} students`;
-      document.getElementById('score-overall-admits-old').textContent = `${fmtInt(m.Admits_base)} students`;
-      document.getElementById('score-overall-eff-yield').textContent = `${fmtPct1(m.Effective_Yield)} (was ${fmtPct(m.Y_base)})`;
-
-      // Visual 1: Waffle Grid & Stacked 2-Bite Comparison Bars
+      // Control Card B: Hooks & Waffle Grid
+      document.getElementById('val-hook-share').textContent = `${m.Hook_Share_ED}% (${fmtInt(m.Hooked_ED_Spots)} of ${fmtInt(m.C_ED)} seats)`;
       renderWaffleGrid(m);
 
-      const hookRateDisplay = edActive && m.Hooked_ED_Spots > 0 ? m.Hook_AcceptRate : 0;
-      const brochureDisplay = edActive ? Math.min(100, m.Brochure_ED_Rate) : 0;
-      const realEdDisplay = edActive ? Math.min(100, m.Real_ED_Rate) : 0;
-      const edBite2Display = edActive ? Math.min(100 - realEdDisplay, m.ED_Bite2_Add) : 0;
-      const realEaDisplay = eaActive ? Math.min(100, m.EA_Rate) : 0;
-      const eaBite2Display = eaActive ? Math.min(100 - realEaDisplay, m.EA_Bite2_Add) : 0;
-      const realRdDisplay = Math.min(100, m.RD_Fresh_Applicant_Rate);
+      // Control Card C: Deferrals
+      document.getElementById('val-defer-rate').textContent = `${m.Defer_rate}% (+${fmtInt(m.Deferred_Count)})`;
 
-      document.getElementById('bar-lbl-hook-rate').textContent = edActive && m.Hooked_ED_Spots > 0
-        ? `${fmtPct1(m.Hook_AcceptRate)} (${fmtInt(m.Hooked_ED_Accepted)} / ${fmtInt(m.Hooked_ED_Applicants)})`
-        : 'N/A (No ED Hooks)';
-      document.getElementById('bar-vis-hook-rate').style.width = `${hookRateDisplay}%`;
+      // Optional Footer Baseline Sliders
+      document.getElementById('val-n-total').textContent = fmtInt(m.N_total);
+      document.getElementById('val-c-target').textContent = fmtInt(m.C_target);
+      document.getElementById('val-y-base').textContent = fmtPct(m.Y_base);
 
-      document.getElementById('bar-lbl-brochure-rate').textContent = edActive
-        ? `${fmtPct(m.Brochure_ED_Rate)} (${fmtInt(m.Total_ED_Accepted)} / ${fmtInt(m.Apps_ED)})`
-        : 'N/A';
-      document.getElementById('bar-vis-brochure-rate').style.width = `${brochureDisplay}%`;
+      // Box 2 Scoreboard Subboxes (Uniform Percentages + Real Counts)
+      const edActive = m.C_ED > 0 && m.Regular_ED_Apps > 0;
+      const regEdApps = Math.max(0, m.Regular_ED_Apps);
+      document.getElementById('score-ed-shot1').textContent = edActive ? fmtPct(m.Real_ED_Rate) : 'N/A';
+      document.getElementById('score-ed-count1').textContent = edActive
+        ? `${fmtInt(m.Open_ED_Accepted)} of ${fmtInt(regEdApps)}`
+        : '0 of 0';
+      document.getElementById('score-ed-both').textContent = edActive ? fmtPct(m.ED_Combined_Rate) : 'N/A';
+      document.getElementById('score-ed-count-both').textContent = edActive
+        ? `${fmtInt(m.ED_Both_Admits)} of ${fmtInt(regEdApps)}`
+        : '0 of 0';
+      document.getElementById('score-ed-rd-extra').textContent = edActive
+        ? `+${fmtInt(m.Admits_RD_from_Deferred_ED)} (+${fmtPct(m.ED_Bite2_Add)})`
+        : '0';
+      document.getElementById('score-ed-seats').textContent = edActive
+        ? `${fmtInt(m.Open_ED_Spots)} seats (+${fmtInt(m.Hooked_ED_Spots)} hooked)`
+        : '0 seats';
 
-      document.getElementById('bar-lbl-real-ed-rate').textContent = edActive
-        ? `${fmtPct(m.Real_ED_Rate)} + ${fmtPct(m.ED_Bite2_Add)} = ${fmtPct(m.ED_Combined_Rate)}`
-        : 'N/A';
-      document.getElementById('bar-vis-real-ed-rate').style.width = `${realEdDisplay}%`;
-      document.getElementById('bar-vis-ed-bite2').style.width = `${edBite2Display}%`;
+      const eaActive = m.C_EA > 0 && m.Apps_EA > 0;
+      document.getElementById('score-ea-shot1').textContent = eaActive ? fmtPct(m.EA_Rate) : 'N/A';
+      document.getElementById('score-ea-count1').textContent = eaActive
+        ? `${fmtInt(m.Admits_EA)} of ${fmtInt(m.Apps_EA)}`
+        : '0 of 0';
+      document.getElementById('score-ea-both').textContent = eaActive ? fmtPct(m.EA_Combined_Rate) : 'N/A';
+      document.getElementById('score-ea-count-both').textContent = eaActive
+        ? `${fmtInt(m.EA_Both_Admits)} of ${fmtInt(m.Apps_EA)}`
+        : '0 of 0';
+      document.getElementById('score-ea-rd-extra').textContent = eaActive
+        ? `+${fmtInt(m.Admits_RD_from_Deferred_EA)} (+${fmtPct(m.EA_Bite2_Add)})`
+        : '0';
+      document.getElementById('score-ea-seats').textContent = `${fmtInt(m.C_EA)} seats (${m.S_EA}% of class)`;
 
-      document.getElementById('bar-lbl-real-ea-rate').textContent = eaActive
-        ? `${fmtPct(m.EA_Rate)} + ${fmtPct(m.EA_Bite2_Add)} = ${fmtPct(m.EA_Combined_Rate)}`
-        : 'N/A';
-      document.getElementById('bar-vis-real-ea-rate').style.width = `${realEaDisplay}%`;
-      document.getElementById('bar-vis-ea-bite2').style.width = `${eaBite2Display}%`;
+      document.getElementById('score-rd-shot1').textContent = m.RD_Total_Pool > 0 ? fmtPct(m.RD_Fresh_Applicant_Rate) : 'N/A';
+      document.getElementById('score-rd-count1').textContent = `${fmtInt(m.Admits_RD_from_Fresh_RD)} of ${fmtInt(m.Apps_RD_direct)} direct apps`;
+      document.getElementById('score-rd-pool').textContent = `${fmtInt(m.Admits_RD)} of ${fmtInt(m.RD_Total_Pool)} pool`;
+      document.getElementById('score-rd-seats').textContent = `${fmtInt(m.C_RD)} seats (${m.S_RD}% of class)`;
 
-      document.getElementById('bar-lbl-real-rd-rate').textContent = `${fmtPct(m.RD_Fresh_Applicant_Rate)} (1 Shot Only)`;
-      document.getElementById('bar-vis-real-rd-rate').style.width = `${realRdDisplay}%`;
+      document.getElementById('score-overall-rate').textContent = fmtPct(m.New_Overall_Rate);
+      document.getElementById('score-overall-count').textContent = `${fmtInt(m.Total_New_Accepted)} of ${fmtInt(m.N_total)} applicants`;
+      document.getElementById('score-overall-baseline').textContent = `${fmtInt(m.Admits_base)} of ${fmtInt(m.N_total)} (${fmtPct(m.AcceptRate_base)})`;
+      document.getElementById('score-overall-seats').textContent = `${fmtInt(m.C_target)} seats (100% of class)`;
 
-      document.getElementById('ed-illusion-callout').innerHTML = edActive
-        ? `<strong>How the "2 Bites" Work:</strong> Applying Early gives you a 1st shot in Dec/Jan (<strong>${fmtPct(m.Real_ED_Rate)}</strong> in ED or <strong>${fmtPct(m.EA_Rate)}</strong> in EA) <em>plus</em> a 2nd shot in March if deferred (<strong>+${fmtPct(m.ED_Bite2_Add)}</strong> / <strong>+${fmtPct(m.EA_Bite2_Add)}</strong> in blue)—bringing your combined chance to <strong>${fmtPct(m.ED_Combined_Rate)} (ED)</strong> or <strong>${fmtPct(m.EA_Combined_Rate)} (EA)</strong> vs. just <strong>${fmtPct(m.RD_Fresh_Applicant_Rate)}</strong> if you wait for Regular Decision!`
-        : `<strong>How the "2 Bites" Work:</strong> Applying Early Action gives a 1st shot in January (<strong>${fmtPct(m.EA_Rate)}</strong>) plus a 2nd shot in RD if deferred (<strong>+${fmtPct(m.EA_Bite2_Add)}</strong>) = <strong>${fmtPct(m.EA_Combined_Rate)}</strong> total vs. <strong>${fmtPct(m.RD_Fresh_Applicant_Rate)}</strong> in RD alone.`;
-
-      renderSqueezeCurve(m);
-      renderTableAndTakeaways(m);
+      renderTable(m);
     }
 
     function toggleStandaloneTheme() {
       document.body.classList.toggle('standalone-dark');
     }
 
-    function downloadEmailFile() {
-      const htmlContent = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
-      const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'usc_college_admissions_simulator.html';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    }
-
     window.addEventListener('DOMContentLoaded', () => {
+      initDualBar('track-spots', 'handle-spots-1', 'handle-spots-2', 'S_ED', 'S_EA');
+      initDualBar('track-apps', 'handle-apps-1', 'handle-apps-2', 'AppShare_ED', 'AppShare_EA');
       applyPreset('usc');
     });
   </script>
